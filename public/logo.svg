@@ -1,0 +1,13 @@
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 width="100%" viewBox="0 0 1254 1254" enable-background="new 0 0 1254 1254" xml:space="preserve">
+<defs>
+  <style>
+    .logo-fill { fill: #D97C6F; }
+  </style>
+</defs>
+<circle class="logo-fill" cx="627" cy="627" r="627"/>
+<g opacity="0.9">
+  <path fill="none" stroke="#FFFAF7" stroke-width="40" d="M 627 400 Q 750 350 850 450 Q 900 500 850 600 Q 750 700 627 750 Q 504 700 427 600 Q 377 500 427 450 Q 527 350 627 400" stroke-linecap="round" stroke-linejoin="round"/>
+  <path fill="none" stroke="#FFFAF7" stroke-width="30" d="M 450 550 Q 550 520 627 550 Q 704 520 804 550" stroke-linecap="round"/>
+</g>
+</svg>

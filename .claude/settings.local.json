@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:58782)",
+      "mcp__Claude_in_Chrome__navigate",
+      "Bash(vercel --version)",
+      "Bash(git --version)",
+      "PowerShell(npm install -g vercel 2>&1)",
+      "PowerShell(tail -5)",
+      "Bash(git init *)",
+      "Bash(git add *)"
+    ]
+  }
+}

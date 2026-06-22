@@ -1,0 +1,415 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { motion } from 'framer-motion'
+import { Calendar, MapPin, Play, Star, BookOpen } from 'lucide-react'
+
+// ─── Countdown ────────────────────────────────────────────────────────────────
+
+function useCountdown(target: Date) {
+  const calculate = () => {
+    const diff = target.getTime() - Date.now()
+    if (diff <= 0) return { days: 0, hours: 0, mins: 0, secs: 0 }
+    return {
+      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+      hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+      mins: Math.floor((diff / (1000 * 60)) % 60),
+      secs: Math.floor((diff / 1000) % 60),
+    }
+  }
+  const [time, setTime] = useState(calculate)
+  useEffect(() => {
+    const id = setInterval(() => setTime(calculate()), 1000)
+    return () => clearInterval(id)
+  }, [])
+  return time
+}
+
+// ─── Upcoming Event Card ───────────────────────────────────────────────────────
+
+function UpcomingEventCard() {
+  const eventDate = new Date('2026-10-09T10:00:00')
+  const { days, hours, mins, secs } = useCountdown(eventDate)
+
+  const countdownItems = [
+    { label: 'Days', value: days },
+    { label: 'Hours', value: hours },
+    { label: 'Mins', value: mins },
+    { label: 'Secs', value: secs },
+  ]
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6 }}
+      whileHover={{ y: -4, boxShadow: '0px 10px 32px rgba(139,30,36,0.13)' }}
+      className="flex flex-col h-full rounded-2xl overflow-hidden"
+      style={{
+        background: '#FAF3ED',
+        boxShadow: '0px 10px 24px rgba(139,30,36,0.08)',
+      }}
+    >
+      {/* Card header */}
+      <div className="flex items-center justify-between px-6 pt-6 pb-2">
+        <h3 className="font-heading font-semibold text-[#2B2B2B]" style={{ fontSize: '20px' }}>
+          Upcoming Event
+        </h3>
+        <Link
+          href="/events"
+          className="flex items-center gap-1 font-sans text-sm font-medium transition-opacity hover:opacity-70"
+          style={{ color: '#8B1E24' }}
+        >
+          View All <span aria-hidden>&#8594;</span>
+        </Link>
+      </div>
+
+      {/* Event image card — background image blended in */}
+      <div className="mx-4 mb-0 rounded-xl overflow-hidden relative" style={{ minHeight: '180px' }}>
+        {/* soft background image */}
+        <div className="absolute inset-0">
+          <Image
+            src="/cherry-blossoms.png"
+            alt=""
+            fill
+            className="object-cover object-center opacity-30"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(to right, rgba(250,243,237,0.95) 40%, rgba(250,243,237,0.6) 100%)',
+            }}
+          />
+        </div>
+
+        {/* Content over image */}
+        <div className="relative z-10 px-5 pt-5 pb-5">
+          <h4
+            className="font-heading font-semibold text-[#2B2B2B] mb-1 leading-snug"
+            style={{ fontSize: '18px' }}
+          >
+            Hangul Day Celebration
+          </h4>
+          <p className="font-sans text-[#666666] mb-4" style={{ fontSize: '13px' }}>
+            The beauty of Korean letters
+          </p>
+
+          {/* Countdown timer */}
+          <div className="flex items-end gap-3 mb-1">
+            {countdownItems.map((item) => (
+              <div key={item.label} className="flex flex-col items-center">
+                <span
+                  className="font-sans font-bold text-[#8B1E24] leading-none"
+                  style={{ fontSize: '22px' }}
+                >
+                  {String(item.value).padStart(2, '0')}
+                </span>
+                <span className="font-sans text-[#666666] mt-0.5" style={{ fontSize: '11px' }}>
+                  {item.label}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Event details */}
+      <div className="px-6 pt-4 pb-3 space-y-2">
+        <div className="flex items-center gap-2">
+          <Calendar className="w-4 h-4 flex-shrink-0" style={{ color: '#8B1E24' }} />
+          <span className="font-sans text-[#444444]" style={{ fontSize: '13px' }}>
+            09 Oct, 2026 (Friday)
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          <MapPin className="w-4 h-4 flex-shrink-0" style={{ color: '#8B1E24' }} />
+          <span className="font-sans text-[#444444]" style={{ fontSize: '13px' }}>
+            DU Campus, Dibrugarh University
+          </span>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div className="px-6 pb-6 pt-3 mt-auto">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full font-sans font-semibold text-white rounded-[22px] py-3 transition-colors"
+          style={{ background: '#8B1E24', fontSize: '15px', height: '44px' }}
+        >
+          Register Now
+        </motion.button>
+      </div>
+    </motion.div>
+  )
+}
+
+// ─── Korean Media Picks ────────────────────────────────────────────────────────
+
+const mediaPicks = [
+  {
+    type: 'Drama',
+    title: 'Crash Landing on You',
+    subtitle: '사랑의 불시착',
+    desc: 'A South Korean heiress accidentally paraglides into North Korea and falls in love.',
+    tag: 'Netflix',
+    icon: Play,
+  },
+  {
+    type: 'Movie',
+    title: 'Parasite',
+    subtitle: '기생충',
+    desc: 'Award-winning masterpiece exploring class divide through a darkly comic lens.',
+    tag: 'Oscar Winner',
+    icon: Star,
+  },
+  {
+    type: 'Book',
+    title: 'Please Look After Mom',
+    subtitle: '엄마를 부탁해',
+    desc: "A profound novel about family bonds and a mother's unconditional love.",
+    tag: 'Bestseller',
+    icon: BookOpen,
+  },
+]
+
+function KoreanMediaPicks() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: 0.1 }}
+      className="flex flex-col h-full rounded-2xl overflow-hidden"
+      style={{
+        background: '#FFFFFF',
+        boxShadow: '0px 10px 24px rgba(139,30,36,0.08)',
+      }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 pt-6 pb-4">
+        <h3 className="font-heading font-semibold text-[#2B2B2B]" style={{ fontSize: '20px' }}>
+          Korean Media Picks
+        </h3>
+        <Link
+          href="/culture"
+          className="flex items-center gap-1 font-sans text-sm font-medium transition-opacity hover:opacity-70"
+          style={{ color: '#8B1E24' }}
+        >
+          View All <span aria-hidden>&#8594;</span>
+        </Link>
+      </div>
+
+      {/* Items */}
+      <div className="flex flex-col flex-1 divide-y px-2" style={{ borderColor: '#E8DCCF' }}>
+        {mediaPicks.map((pick, idx) => {
+          const Icon = pick.icon
+          return (
+            <motion.div
+              key={idx}
+              whileHover={{ backgroundColor: '#FAF3ED' }}
+              className="flex items-start gap-4 px-4 py-4 rounded-xl cursor-pointer transition-colors"
+            >
+              {/* Icon tile */}
+              <div
+                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ background: '#FAF3ED' }}
+              >
+                <Icon className="w-5 h-5" style={{ color: '#8B1E24' }} />
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between gap-2 mb-0.5">
+                  <p className="font-heading font-semibold text-[#2B2B2B] truncate" style={{ fontSize: '14px' }}>
+                    {pick.title}
+                  </p>
+                  <span
+                    className="flex-shrink-0 font-sans text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                    style={{ background: '#FAF3ED', color: '#8B1E24' }}
+                  >
+                    {pick.tag}
+                  </span>
+                </div>
+                <p className="font-korean text-[#8B1E24] mb-1" style={{ fontSize: '12px' }}>
+                  {pick.subtitle}
+                </p>
+                <p className="font-sans text-[#666666] leading-snug" style={{ fontSize: '12px' }}>
+                  {pick.desc}
+                </p>
+              </div>
+            </motion.div>
+          )
+        })}
+      </div>
+
+      {/* Footer CTA */}
+      <div className="px-6 py-5">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full font-sans font-semibold rounded-[22px] py-3 border-2 transition-colors"
+          style={{
+            borderColor: '#8B1E24',
+            color: '#8B1E24',
+            background: 'transparent',
+            fontSize: '14px',
+            height: '44px',
+          }}
+        >
+          Explore All Media
+        </motion.button>
+      </div>
+    </motion.div>
+  )
+}
+
+// ─── New Member Spotlight ──────────────────────────────────────────────────────
+
+const members = [
+  {
+    initials: 'PJ',
+    name: 'Park Ji-won',
+    since: 'Member since Jan 2025',
+    quote: '"Learning Korean is not just about a language — it\'s about connecting hearts and cultures."',
+    dream: 'Visit Korea',
+    word: '사랑 (Sa-rang) — Love',
+  },
+  {
+    initials: 'KM',
+    name: 'Kim Min-jun',
+    since: 'Member since Mar 2025',
+    quote: '"Every class brings me closer to understanding this beautiful culture."',
+    dream: 'Become Translator',
+    word: '친구 (Chingu) — Friend',
+  },
+]
+
+function NewMemberSpotlight() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: 0.2 }}
+      className="flex flex-col h-full rounded-2xl overflow-hidden"
+      style={{
+        background: '#FFFFFF',
+        boxShadow: '0px 10px 24px rgba(139,30,36,0.08)',
+      }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 pt-6 pb-4">
+        <h3 className="font-heading font-semibold text-[#2B2B2B]" style={{ fontSize: '20px' }}>
+          New Member Spotlight
+        </h3>
+        <Link
+          href="/community"
+          className="flex items-center gap-1 font-sans text-sm font-medium transition-opacity hover:opacity-70"
+          style={{ color: '#8B1E24' }}
+        >
+          View All <span aria-hidden>&#8594;</span>
+        </Link>
+      </div>
+
+      {/* Member cards */}
+      <div className="flex flex-col flex-1 gap-3 px-4 pb-4">
+        {members.map((m, idx) => (
+          <motion.div
+            key={idx}
+            whileHover={{ y: -2, boxShadow: '0 4px 16px rgba(139,30,36,0.10)' }}
+            transition={{ duration: 0.2 }}
+            className="rounded-2xl p-4 border"
+            style={{ background: '#FAF3ED', borderColor: '#E8DCCF' }}
+          >
+            {/* Avatar + name row */}
+            <div className="flex items-center gap-3 mb-3">
+              <div
+                className="w-11 h-11 rounded-full flex items-center justify-center font-heading font-bold text-white flex-shrink-0"
+                style={{ background: '#8B1E24', fontSize: '14px' }}
+              >
+                {m.initials}
+              </div>
+              <div>
+                <p className="font-heading font-semibold text-[#2B2B2B] leading-tight" style={{ fontSize: '14px' }}>
+                  {m.name}
+                </p>
+                <p className="font-sans text-[#666666]" style={{ fontSize: '11px' }}>
+                  {m.since}
+                </p>
+              </div>
+              <span
+                className="ml-auto font-sans text-[10px] font-semibold px-2 py-0.5 rounded-full"
+                style={{ background: '#8B1E24', color: '#FFFFFF' }}
+              >
+                New
+              </span>
+            </div>
+
+            {/* Quote */}
+            <p
+              className="font-sans italic text-[#444444] leading-snug mb-3"
+              style={{ fontSize: '12px' }}
+            >
+              {m.quote}
+            </p>
+
+            {/* Stats row */}
+            <div
+              className="grid grid-cols-2 gap-2 pt-3 border-t"
+              style={{ borderColor: '#E8DCCF' }}
+            >
+              <div>
+                <p className="font-sans text-[#8B1E24] font-semibold" style={{ fontSize: '10px' }}>
+                  Dream
+                </p>
+                <p className="font-sans text-[#2B2B2B]" style={{ fontSize: '12px' }}>
+                  {m.dream}
+                </p>
+              </div>
+              <div>
+                <p className="font-sans text-[#8B1E24] font-semibold" style={{ fontSize: '10px' }}>
+                  Favourite Word
+                </p>
+                <p className="font-sans text-[#2B2B2B]" style={{ fontSize: '12px' }}>
+                  {m.word}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Footer CTA */}
+      <div className="px-6 pb-6 mt-auto">
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full font-sans font-semibold text-white rounded-[22px] py-3 transition-colors"
+          style={{ background: '#8B1E24', fontSize: '14px', height: '44px' }}
+        >
+          Join Our Community
+        </motion.button>
+      </div>
+    </motion.div>
+  )
+}
+
+// ─── Main Section ──────────────────────────────────────────────────────────────
+
+export function EventsSection() {
+  return (
+    <section className="py-16 bg-background">
+      <div className="max-w-7xl mx-auto px-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          <UpcomingEventCard />
+          <KoreanMediaPicks />
+          <NewMemberSpotlight />
+        </div>
+      </div>
+    </section>
+  )
+}
