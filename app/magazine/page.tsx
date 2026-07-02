@@ -122,7 +122,7 @@ export default function MagazinePage() {
                       {featured.title}
                     </h2>
                     <p className="font-sans text-xs" style={{ color: `${featured.cover_accent}60` }}>
-                      {MONTH_NAME[featured.month] ?? featured.month} {featured.year}
+                      {MONTH_NAME[+featured.month] ?? featured.month} {featured.year}
                       {featured.page_count ? ` · ${featured.page_count} pages` : ''}
                     </p>
                   </div>
@@ -316,7 +316,7 @@ export default function MagazinePage() {
                         </p>
                         <p className="font-sans text-[11px] text-[#999] flex items-center gap-1.5">
                           <Calendar className="w-3 h-3" />
-                          {MONTH_NAME[issue.month] ?? issue.month} {issue.year}
+                          {MONTH_NAME[+issue.month] ?? issue.month} {issue.year}
                           {issue.page_count ? ` · ${issue.page_count}pp` : ''}
                         </p>
                       </div>
