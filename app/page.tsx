@@ -1,6 +1,6 @@
 import { Navbar } from '@/components/navbar'
 import { HeroSection } from '@/components/hero-section'
-import { StatsBar } from '@/components/stats-bar'
+import { StatsBar } from '@/components/stats-bar-wrapper'
 import { KoreanPhraseWall } from '@/components/korean-phrase-wall'
 import { EventsSection } from '@/components/events-section'
 import { CommunitySection } from '@/components/community-section'

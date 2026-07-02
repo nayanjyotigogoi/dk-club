@@ -1,8 +1,10 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Lightbulb, Sparkles } from 'lucide-react'
+import { API_BASE, type ApiFunFact } from '@/lib/api'
 
 // ─── Moments Together ─────────────────────────────────────────────────────────
 
@@ -120,15 +122,22 @@ function MomentsTogether() {
 
 // ─── Fun Fact ─────────────────────────────────────────────────────────────────
 
-const funFacts = [
-  'Korean (Hangul) was invented by King Sejong the Great in 1443 — making it one of the only writing systems with a known inventor.',
-  'Hangul has only 24 letters, but can represent over 11,000 unique syllable blocks.',
-  'South Korea has the world\'s fastest average internet speed, helping K-pop and K-dramas reach every corner of the globe.',
-  'The word "Korea" comes from the Goryeo dynasty (918–1392), famous for celadon pottery.',
+const FALLBACK_FUN_FACTS: ApiFunFact[] = [
+  { id: 1, type: 'fact', korean_word: '한', romanized: 'Han', fact: 'Korean (Hangul) was invented by King Sejong the Great in 1443 — making it one of the only writing systems with a known inventor.', is_active: true, sort_order: 1 },
+  { id: 2, type: 'fact', korean_word: '한글', romanized: 'Hangul', fact: 'Hangul has only 24 letters, but can represent over 11,000 unique syllable blocks.', is_active: true, sort_order: 2 },
 ]
 
 function FunFactCard() {
-  const fact = funFacts[Math.floor(Math.random() * funFacts.length)]
+  const [facts, setFacts] = useState<ApiFunFact[]>(FALLBACK_FUN_FACTS)
+
+  useEffect(() => {
+    fetch(`${API_BASE}/fun-facts`)
+      .then(r => r.json())
+      .then((data: ApiFunFact[]) => { if (data?.length) setFacts(data) })
+      .catch(() => {})
+  }, [])
+
+  const item = facts[Math.floor(Math.random() * facts.length)] ?? facts[0]
 
   return (
     <motion.div
@@ -164,14 +173,14 @@ function FunFactCard() {
         className="w-10 h-10 rounded-xl flex items-center justify-center mb-3 font-korean font-bold"
         style={{ background: '#FAF3ED', color: '#8B1E24', fontSize: '18px' }}
       >
-        한
+        {item?.korean_word?.charAt(0) ?? '한'}
       </div>
 
       <p
         className="font-sans text-[#444444] leading-relaxed flex-1"
         style={{ fontSize: '13px' }}
       >
-        {fact}
+        {item?.fact}
       </p>
     </motion.div>
   )
@@ -179,26 +188,33 @@ function FunFactCard() {
 
 // ─── Did You Know ─────────────────────────────────────────────────────────────
 
-const didYouKnow = [
+const FALLBACK_DID_YOU_KNOW: ApiFunFact[] = [
   {
-    korean: '존댓말',
-    romanized: 'Jondaemal',
-    fact: 'Korean has an elaborate honorific system — how you speak changes entirely based on the age and status of who you\'re talking to.',
-  },
-  {
-    korean: '눈치',
+    id: 10,
+    type: 'word',
+    korean_word: '눈치',
     romanized: 'Nunchi',
     fact: '"Nunchi" is an untranslatable Korean concept — the subtle art of reading the room and understanding unspoken feelings.',
-  },
-  {
-    korean: '빨리빨리',
-    romanized: 'Ppalli-ppalli',
-    fact: '"Ppalli-ppalli" (hurry-hurry) is a cultural philosophy of speed and efficiency that shaped Korea\'s economic miracle.',
+    is_active: true,
+    sort_order: 1,
   },
 ]
 
 function DidYouKnowCard() {
-  const item = didYouKnow[1]
+  const [items, setItems] = useState<ApiFunFact[]>(FALLBACK_DID_YOU_KNOW)
+
+  useEffect(() => {
+    fetch(`${API_BASE}/fun-facts`)
+      .then(r => r.json())
+      .then((data: ApiFunFact[]) => {
+        const wordFacts = data.filter(f => f.type === 'word')
+        if (wordFacts.length) setItems(wordFacts)
+        else if (data.length) setItems(data)
+      })
+      .catch(() => {})
+  }, [])
+
+  const item = items[1] ?? items[0]
 
   return (
     <motion.div
@@ -235,13 +251,13 @@ function DidYouKnowCard() {
           className="font-korean font-bold"
           style={{ fontSize: '22px', color: '#8B1E24' }}
         >
-          {item.korean}
+          {item?.korean_word}
         </span>
         <span
           className="font-sans text-[#888888]"
           style={{ fontSize: '12px' }}
         >
-          {item.romanized}
+          {item?.romanized}
         </span>
       </div>
 
@@ -249,7 +265,7 @@ function DidYouKnowCard() {
         className="font-sans text-[#444444] leading-relaxed flex-1"
         style={{ fontSize: '13px' }}
       >
-        {item.fact}
+        {item?.fact}
       </p>
     </motion.div>
   )

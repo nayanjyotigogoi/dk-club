@@ -1,13 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Calendar, MapPin, ArrowRight, CheckCircle2, Radio } from 'lucide-react'
 import { PageHero } from '@/components/page-hero'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { events, type EventStatus } from '@/lib/data/events'
+import { type ApiEvent, type EventStatus, API_BASE } from '@/lib/api'
 
 type Filter = 'all' | EventStatus
 
@@ -25,6 +25,14 @@ const FILTERS: { key: Filter; label: string }[] = [
 
 export default function EventsPage() {
   const [active, setActive] = useState<Filter>('all')
+  const [events, setEvents] = useState<ApiEvent[]>([])
+
+  useEffect(() => {
+    fetch(`${API_BASE}/events`)
+      .then(r => r.json())
+      .then((data: ApiEvent[]) => setEvents(data))
+      .catch(() => {})
+  }, [])
 
   const filtered = active === 'all' ? events : events.filter(e => e.status === active)
   const featured = events.find(e => e.status === 'upcoming') ?? events[0]
@@ -43,7 +51,7 @@ export default function EventsPage() {
 
         {/* ── Featured upcoming event ── */}
         <section className="max-w-7xl mx-auto px-6 py-14">
-          <Link href={`/events/${featured.slug}`}>
+          {!featured ? null : <Link href={`/events/${featured.slug}`}>
             <motion.div
               className="relative overflow-hidden rounded-2xl p-10 flex flex-col lg:flex-row items-start lg:items-end justify-between gap-8 cursor-pointer"
               style={{ background: featured.color, minHeight: 220 }}
@@ -55,7 +63,7 @@ export default function EventsPage() {
                 className="absolute right-10 top-1/2 -translate-y-1/2 font-korean font-bold select-none pointer-events-none opacity-10"
                 style={{ fontSize: 200, color: '#fff', lineHeight: 1 }}
               >
-                {featured.koreanTitle.charAt(0)}
+                {featured.korean_title?.charAt(0)}
               </span>
 
               <div className="relative z-10">
@@ -65,7 +73,7 @@ export default function EventsPage() {
                 <h2 className="font-heading font-bold text-white mb-1" style={{ fontSize: 'clamp(24px, 3vw, 36px)' }}>
                   {featured.title}
                 </h2>
-                <p className="font-korean text-white/60 text-sm mb-4">{featured.koreanTitle}</p>
+                <p className="font-korean text-white/60 text-sm mb-4">{featured.korean_title}</p>
                 <div className="flex flex-wrap gap-5">
                   <span className="flex items-center gap-1.5 font-sans text-sm text-white/80">
                     <Calendar className="w-4 h-4" /> {featured.date}
@@ -85,7 +93,7 @@ export default function EventsPage() {
                 </span>
               </div>
             </motion.div>
-          </Link>
+          </Link>}
         </section>
 
         {/* ── Filter tabs + grid ── */}
@@ -133,7 +141,7 @@ export default function EventsPage() {
                           className="absolute right-4 top-1/2 -translate-y-1/2 font-korean font-bold text-white/10 select-none pointer-events-none"
                           style={{ fontSize: 80, lineHeight: 1 }}
                         >
-                          {event.koreanTitle.charAt(0)}
+                          {event.korean_title?.charAt(0)}
                         </span>
                         <span
                           className="relative z-10 font-sans text-xs font-semibold px-3 py-1 rounded-full"
@@ -156,7 +164,7 @@ export default function EventsPage() {
                         <h3 className="font-heading font-semibold text-[#2B2B2B] text-lg mb-1 leading-snug">
                           {event.title}
                         </h3>
-                        <p className="font-korean text-[#aaa] text-xs mb-3">{event.koreanTitle}</p>
+                        <p className="font-korean text-[#aaa] text-xs mb-3">{event.korean_title}</p>
                         <p className="font-sans text-[#666] text-sm leading-relaxed mb-5 flex-1">
                           {event.description}
                         </p>

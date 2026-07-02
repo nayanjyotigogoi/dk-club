@@ -1,18 +1,19 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { API_BASE, type ApiPhrase } from '@/lib/api'
 
-const phrases = [
-  { korean: '안녕하세요', english: 'Hello' },
-  { korean: '감사합니다', english: 'Thank you' },
-  { korean: '잘 부탁드립니다', english: 'Please take care of me' },
-  { korean: '화이팅!', english: 'Fighting!' },
-  { korean: '사랑해요', english: 'I love you' },
-  { korean: '수고했어요', english: 'Good job!' },
-  { korean: '반갑습니다', english: 'Nice to meet you' },
-  { korean: '맛있어요', english: "It's delicious" },
-  { korean: '괜찮아요', english: "It's okay" },
+const FALLBACK_PHRASES: ApiPhrase[] = [
+  { id: 1, korean: '안녕하세요', english: 'Hello', romanized: 'Annyeonghaseyo', sort_order: 1, is_active: true },
+  { id: 2, korean: '감사합니다', english: 'Thank you', romanized: 'Gamsahamnida', sort_order: 2, is_active: true },
+  { id: 3, korean: '잘 부탁드립니다', english: 'Please take care of me', romanized: 'Jal butakdeurimnida', sort_order: 3, is_active: true },
+  { id: 4, korean: '화이팅!', english: 'Fighting!', romanized: 'Hwaiting!', sort_order: 4, is_active: true },
+  { id: 5, korean: '사랑해요', english: 'I love you', romanized: 'Saranghaeyo', sort_order: 5, is_active: true },
+  { id: 6, korean: '수고했어요', english: 'Good job!', romanized: 'Sugohaesseoyo', sort_order: 6, is_active: true },
+  { id: 7, korean: '반갑습니다', english: 'Nice to meet you', romanized: 'Bangapseumnida', sort_order: 7, is_active: true },
+  { id: 8, korean: '맛있어요', english: "It's delicious", romanized: 'Massisseoyo', sort_order: 8, is_active: true },
+  { id: 9, korean: '괜찮아요', english: "It's okay", romanized: 'Gwaenchanayo', sort_order: 9, is_active: true },
 ]
 
 function FlowerIcon() {
@@ -33,6 +34,14 @@ function FlowerIcon() {
 
 export function KoreanPhraseWall() {
   const scrollRef = useRef<HTMLDivElement>(null)
+  const [phrases, setPhrases] = useState<ApiPhrase[]>(FALLBACK_PHRASES)
+
+  useEffect(() => {
+    fetch(`${API_BASE}/phrases`)
+      .then(r => r.json())
+      .then((data: ApiPhrase[]) => { if (data?.length) setPhrases(data) })
+      .catch(() => {})
+  }, [])
 
   const scroll = (dir: 'left' | 'right') => {
     if (scrollRef.current) {

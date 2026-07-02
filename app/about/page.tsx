@@ -1,11 +1,23 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowRight, Heart, BookOpen, Globe, Users, Star, Music } from 'lucide-react'
 import { PageHero } from '@/components/page-hero'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
+import { API_BASE } from '@/lib/api'
+
+type TeamMember = {
+  id: number
+  name: string
+  initials: string
+  role: string
+  korean_role: string | null
+  department: string | null
+  color: string | null
+}
 
 const fade = {
   hidden: { opacity: 0, y: 20 },
@@ -30,16 +42,26 @@ const pillars = [
   { icon: Users, title: 'Mentorship', korean: '멘토링', body: 'Connecting curious beginners with experienced members for language practice, guidance and friendship.' },
 ]
 
-const team = [
-  { name: 'Sneha Borah',   role: 'President',              korean: '회장',    initials: 'SB', color: '#8B1E24', dept: 'B.A. English, 3rd Year' },
-  { name: 'Rohan Das',     role: 'Vice President',         korean: '부회장',  initials: 'RD', color: '#5C3A6B', dept: 'B.Com, 3rd Year' },
-  { name: 'Priya Sharma',  role: 'Cultural Secretary',     korean: '문화 총무', initials: 'PS', color: '#1E5C8B', dept: 'B.Sc Physics, 2nd Year' },
-  { name: 'Ankita Gogoi',  role: 'Magazine Editor',        korean: '편집장',  initials: 'AG', color: '#1E8B5C', dept: 'B.A. Mass Comm, 3rd Year' },
-  { name: 'Dev Hazarika',  role: 'Events Head',            korean: '행사 팀장', initials: 'DH', color: '#8B6B1E', dept: 'B.Tech CSE, 2nd Year' },
-  { name: 'Mitu Kalita',   role: 'Membership Coordinator', korean: '회원 담당', initials: 'MK', color: '#8B3A1E', dept: 'B.A. Hindi, 2nd Year' },
+// Fallback team used if API is unreachable
+const FALLBACK_TEAM: TeamMember[] = [
+  { id: 1, name: 'Sneha Borah',  initials: 'SB', role: 'President',              korean_role: '회장',    color: '#8B1E24', department: 'B.A. English, 3rd Year' },
+  { id: 2, name: 'Rohan Das',    initials: 'RD', role: 'Vice President',          korean_role: '부회장',  color: '#5C3A6B', department: 'B.Com, 3rd Year' },
+  { id: 3, name: 'Priya Sharma', initials: 'PS', role: 'Cultural Secretary',      korean_role: '문화 총무',color: '#1E5C8B', department: 'B.Sc Physics, 2nd Year' },
+  { id: 4, name: 'Ankita Gogoi', initials: 'AG', role: 'Design Lead',             korean_role: '디자인 팀장', color: '#1E8B5C', department: 'B.A. Mass Comm, 3rd Year' },
+  { id: 5, name: 'Dev Hazarika', initials: 'DH', role: 'Events Head',             korean_role: '행사 팀장',color: '#8B6B1E', department: 'B.Tech CSE, 2nd Year' },
+  { id: 6, name: 'Mitu Kalita',  initials: 'MK', role: 'Membership Coordinator',  korean_role: '회원 담당',color: '#8B3A1E', department: 'B.A. Hindi, 2nd Year' },
 ]
 
 export default function AboutPage() {
+  const [team, setTeam] = useState<TeamMember[]>(FALLBACK_TEAM)
+
+  useEffect(() => {
+    fetch(`${API_BASE}/members?type=team`)
+      .then(r => r.json())
+      .then((data: TeamMember[]) => { if (data?.length) setTeam(data) })
+      .catch(() => {})
+  }, [])
+
   return (
     <>
       <Navbar />
@@ -64,13 +86,13 @@ export default function AboutPage() {
               <motion.p variants={fade} className="font-korean text-[#8B1E24]/60 text-sm mb-2">우리의 이야기</motion.p>
               <motion.h2 variants={fade} className="font-heading font-bold text-[#2B2B2B] text-3xl mb-6">Our Story</motion.h2>
               <motion.p variants={fade} className="font-sans text-[#555] leading-relaxed mb-4 text-base">
-                Dibrugarh Korean Club (DKC) was born from a simple realisation: thousands of students across Northeast India were discovering Korean culture through drama, music and film — but there was nowhere to celebrate it together.
+                Dibrugarh Korean Club (DKC) was born from a simple realisation: thousands of students across Northeast India were discovering Korean culture through drama, music and film but there was nowhere to celebrate it together.
               </motion.p>
               <motion.p variants={fade} className="font-sans text-[#555] leading-relaxed mb-4 text-base">
-                Founded in 2023 at Dibrugarh University by a handful of Korean culture enthusiasts, DKC has grown into one of the most vibrant cultural organisations in the region — with over 550 members, a quarterly magazine, annual festivals, language workshops, and a growing library of Korean resources.
+                Founded in 2025 at Dibrugarh University by a handful of Korean culture enthusiasts, DKC has grown into one of the most vibrant cultural organisations in the region with over 550 members, a quarterly magazine, annual festivals, language workshops, and a growing library of Korean resources.
               </motion.p>
               <motion.p variants={fade} className="font-sans text-[#555] leading-relaxed text-base">
-                We believe that language is a doorway to understanding. When you learn Korean — even a little — you start to see Korea differently. The drama lines hit harder. The food tastes better. The music makes more sense. That transformation is what DKC is built on.
+                We believe that language is a doorway to understanding. When you learn Korean even a little, you start to see Korea differently. The drama lines hit harder. The food tastes better. The music makes more sense. That transformation is what DKC is built on.
               </motion.p>
             </motion.div>
 
@@ -81,13 +103,13 @@ export default function AboutPage() {
               transition={{ duration: 0.6 }}
             >
               <div className="rounded-2xl p-8" style={{ background: '#8B1E24' }}>
-                <p className="font-heading font-bold text-white text-5xl mb-1">550+</p>
+                <p className="font-heading font-bold text-white text-5xl mb-1">20+</p>
                 <p className="font-sans text-white/60 text-sm mb-8">Active Members</p>
                 <div className="space-y-5">
                   {[
-                    ['25+',   'Events Organised'],
+                    ['5+',   'Events Organised'],
                     ['12+',   'Cultural Celebrations'],
-                    ['4+',    'Magazine Editions'],
+                    ['2+',    'Magazine Editions'],
                     ['1000+', 'Memories Created'],
                   ].map(([n, l]) => (
                     <div key={l} className="flex items-baseline gap-3 border-t pt-4" style={{ borderColor: 'rgba(255,255,255,0.12)' }}>
@@ -98,41 +120,6 @@ export default function AboutPage() {
                 </div>
               </div>
             </motion.div>
-          </div>
-        </section>
-
-        {/* ── Timeline ── */}
-        <section style={{ background: '#FAF3ED', borderTop: '1px solid #E8DCCF', borderBottom: '1px solid #E8DCCF' }}>
-          <div className="max-w-7xl mx-auto px-6 py-20">
-            <div className="text-center mb-14">
-              <p className="font-korean text-[#8B1E24]/60 text-sm mb-2">우리의 여정</p>
-              <h2 className="font-heading font-bold text-[#2B2B2B] text-3xl">Our Journey</h2>
-            </div>
-            <div className="relative max-w-2xl mx-auto">
-              <div className="absolute left-0 top-2 bottom-2 w-px" style={{ background: '#E8DCCF' }} />
-              <div className="space-y-10 pl-10">
-                {timeline.map((item, i) => (
-                  <motion.div
-                    key={i}
-                    className="relative"
-                    initial={{ opacity: 0, x: -16 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.45, delay: i * 0.07 }}
-                  >
-                    <div
-                      className="absolute -left-[42px] top-1 w-3.5 h-3.5 rounded-full border-2"
-                      style={{ background: '#FAF3ED', borderColor: '#8B1E24' }}
-                    />
-                    <p className="font-heading font-bold text-[#8B1E24] text-xs mb-0.5 tracking-wide uppercase">
-                      {item.year} &middot; {item.season}
-                    </p>
-                    <h3 className="font-heading font-semibold text-[#2B2B2B] text-base mb-1">{item.title}</h3>
-                    <p className="font-sans text-[#666] text-sm leading-relaxed">{item.body}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
           </div>
         </section>
 
@@ -178,7 +165,7 @@ export default function AboutPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {team.map((member, i) => (
                 <motion.div
-                  key={i}
+                  key={member.id}
                   className="rounded-2xl p-6 flex items-center gap-5"
                   style={{ background: '#FFFFFF', border: '1px solid #E8DCCF' }}
                   initial={{ opacity: 0, y: 16 }}
@@ -188,15 +175,15 @@ export default function AboutPage() {
                 >
                   <div
                     className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 font-heading font-bold text-white text-lg"
-                    style={{ background: member.color }}
+                    style={{ background: member.color ?? '#8B1E24' }}
                   >
                     {member.initials}
                   </div>
                   <div>
                     <p className="font-heading font-semibold text-[#2B2B2B] text-sm">{member.name}</p>
                     <p className="font-sans text-[#8B1E24] text-xs font-medium mt-0.5">{member.role}</p>
-                    <p className="font-korean text-[#bbb] text-xs mt-0.5">{member.korean}</p>
-                    <p className="font-sans text-[#bbb] text-xs mt-1">{member.dept}</p>
+                    {member.korean_role && <p className="font-korean text-[#bbb] text-xs mt-0.5">{member.korean_role}</p>}
+                    {member.department && <p className="font-sans text-[#bbb] text-xs mt-1">{member.department}</p>}
                   </div>
                 </motion.div>
               ))}
@@ -228,7 +215,7 @@ export default function AboutPage() {
                 ))}
               </div>
               <Link
-                href="/contact"
+                href="/join"
                 className="inline-flex items-center gap-2 font-sans font-semibold text-white transition-all hover:shadow-lg active:scale-95"
                 style={{ background: '#8B1E24', height: '46px', padding: '0 28px', borderRadius: '24px', fontSize: '15px' }}
               >

@@ -1,12 +1,14 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, ZoomIn } from 'lucide-react'
 import { PageHero } from '@/components/page-hero'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { galleryPhotos, type GalleryCategory } from '@/lib/data/gallery'
+import { type ApiGalleryPhoto, API_BASE } from '@/lib/api'
+
+type GalleryCategory = 'all' | 'events' | 'culture' | 'members' | 'campus'
 
 const FILTERS: { key: GalleryCategory; label: string }[] = [
   { key: 'all',     label: 'All'         },
@@ -25,11 +27,19 @@ const HEIGHT_MAP = {
 
 export default function GalleryPage() {
   const [filter, setFilter] = useState<GalleryCategory>('all')
-  const [lightbox, setLightbox] = useState<typeof galleryPhotos[number] | null>(null)
+  const [photos, setPhotos] = useState<ApiGalleryPhoto[]>([])
+  const [lightbox, setLightbox] = useState<ApiGalleryPhoto | null>(null)
+
+  useEffect(() => {
+    fetch(`${API_BASE}/gallery`)
+      .then(r => r.json())
+      .then((data: ApiGalleryPhoto[]) => setPhotos(data))
+      .catch(() => {})
+  }, [])
 
   const visible = filter === 'all'
-    ? galleryPhotos
-    : galleryPhotos.filter(p => p.category === filter)
+    ? photos
+    : photos.filter(p => p.category === filter)
 
   return (
     <>
@@ -107,8 +117,8 @@ export default function GalleryPage() {
                       <p className="font-sans text-white text-xs font-medium leading-snug mb-1">
                         {photo.caption}
                       </p>
-                      {photo.event && (
-                        <p className="font-sans text-white/60 text-[10px]">{photo.event}</p>
+                      {photo.event_name && (
+                        <p className="font-sans text-white/60 text-[10px]">{photo.event_name}</p>
                       )}
                     </div>
 
@@ -170,8 +180,8 @@ export default function GalleryPage() {
                 <div className="p-5" style={{ background: '#fff' }}>
                   <p className="font-sans font-semibold text-[#2B2B2B] text-base mb-1">{lightbox.caption}</p>
                   <div className="flex items-center gap-3">
-                    {lightbox.event && (
-                      <span className="font-sans text-xs text-[#8B1E24]">{lightbox.event}</span>
+                    {lightbox.event_name && (
+                      <span className="font-sans text-xs text-[#8B1E24]">{lightbox.event_name}</span>
                     )}
                     <span className="font-sans text-xs text-[#bbb]">{lightbox.year}</span>
                     <span

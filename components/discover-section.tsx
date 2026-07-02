@@ -58,27 +58,28 @@ function MagazineCard() {
         className="mx-6 rounded-xl flex-1 flex flex-col items-center justify-center px-6 py-8"
         style={{ background: 'rgba(255,255,255,0.08)' }}
       >
-        {/* Decorative Korean characters */}
-        <div className="font-korean text-6xl font-bold mb-3" style={{ color: 'rgba(255,255,255,0.15)' }}>
+        <div className="font-korean text-6xl font-bold mb-4" style={{ color: 'rgba(255,255,255,0.15)' }}>
           한류
         </div>
-        <div
-          className="w-16 h-0.5 mb-5"
-          style={{ background: 'rgba(255,255,255,0.2)' }}
-        />
-        <p className="font-heading text-xl font-bold text-white text-center leading-snug mb-2">
-          The Hallyu Wave
+        <div className="w-16 h-0.5 mb-5" style={{ background: 'rgba(255,255,255,0.2)' }} />
+        <p className="font-heading text-lg font-bold text-white text-center leading-snug mb-2">
+          Our First Issue
         </p>
-        <p className="font-sans text-sm text-white/60 text-center leading-relaxed mb-1">
-          How Korean culture conquered the world
+        <p className="font-sans text-xs text-white/50 text-center leading-relaxed">
+          Coming soon — stay tuned
         </p>
-        <span className="font-sans text-xs text-white/40 mt-2">Vol. 04 · June 2026</span>
+        <span
+          className="font-sans text-[10px] font-semibold px-3 py-1 rounded-full mt-4"
+          style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.15)' }}
+        >
+          Not yet published
+        </span>
       </div>
 
       {/* Bottom CTA */}
       <div className="px-6 py-5">
         <p className="font-sans text-xs text-white/50 mb-3 leading-relaxed">
-          Dive into stories on K-drama, music, food and the Korean language journey of our members.
+          Our magazine will feature student-written stories, cultural essays and language notes. Check back soon.
         </p>
         <Link
           href="/magazine"
@@ -90,7 +91,7 @@ function MagazineCard() {
             border: '1px solid rgba(255,255,255,0.25)',
           }}
         >
-          Read the Magazine
+          View Magazine
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
       </div>

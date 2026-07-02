@@ -1,14 +1,15 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ShoppingBag, AlertCircle, CheckCircle2, ArrowRight, Package } from 'lucide-react'
 import { PageHero } from '@/components/page-hero'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { goodies, type GoodiesCategory } from '@/lib/data/goodies'
+import { type ApiGoodie, API_BASE } from '@/lib/api'
 
+type GoodiesCategory = 'all' | 'accessories' | 'stationery' | 'apparel' | 'collectibles'
 type Filter = GoodiesCategory
 
 const FILTERS: { key: Filter; label: string }[] = [
@@ -27,6 +28,14 @@ const AVAIL_STYLES = {
 
 export default function GoodiesPage() {
   const [filter, setFilter] = useState<Filter>('all')
+  const [goodies, setGoodies] = useState<ApiGoodie[]>([])
+
+  useEffect(() => {
+    fetch(`${API_BASE}/goodies`)
+      .then(r => r.json())
+      .then((data: ApiGoodie[]) => setGoodies(data))
+      .catch(() => {})
+  }, [])
 
   const visible = filter === 'all' ? goodies : goodies.filter(g => g.category === filter)
 
@@ -139,7 +148,7 @@ export default function GoodiesPage() {
                   <div className="p-5 flex flex-col flex-1">
                     <p className="font-sans text-[10px] font-semibold uppercase tracking-widest text-[#8B1E24]/60 mb-1">{item.category}</p>
                     <h3 className="font-heading font-semibold text-[#2B2B2B] text-sm leading-snug mb-0.5">{item.name}</h3>
-                    <p className="font-korean text-[#bbb] text-xs mb-3">{item.koreanName}</p>
+                    <p className="font-korean text-[#bbb] text-xs mb-3">{item.korean_name}</p>
                     <p className="font-sans text-[#666] text-xs leading-relaxed flex-1 mb-4">{item.description}</p>
 
                     <div className="flex items-center justify-between mt-auto">

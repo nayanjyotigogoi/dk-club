@@ -5,32 +5,60 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { Calendar, MapPin, Play, Star, BookOpen } from 'lucide-react'
+import { API_BASE, type ApiEvent, type ApiMediaPick, type ApiMember } from '@/lib/api'
 
 // ─── Countdown ────────────────────────────────────────────────────────────────
 
 function useCountdown(target: Date) {
-  const calculate = () => {
-    const diff = target.getTime() - Date.now()
-    if (diff <= 0) return { days: 0, hours: 0, mins: 0, secs: 0 }
-    return {
-      days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-      hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-      mins: Math.floor((diff / (1000 * 60)) % 60),
-      secs: Math.floor((diff / 1000) % 60),
-    }
-  }
-  const [time, setTime] = useState(calculate)
+  const [time, setTime] = useState({ days: 0, hours: 0, mins: 0, secs: 0 })
   useEffect(() => {
+    const calculate = () => {
+      const diff = target.getTime() - Date.now()
+      if (diff <= 0) return { days: 0, hours: 0, mins: 0, secs: 0 }
+      return {
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        mins: Math.floor((diff / (1000 * 60)) % 60),
+        secs: Math.floor((diff / 1000) % 60),
+      }
+    }
+    setTime(calculate())
     const id = setInterval(() => setTime(calculate()), 1000)
     return () => clearInterval(id)
-  }, [])
+  }, [target])
   return time
 }
 
 // ─── Upcoming Event Card ───────────────────────────────────────────────────────
 
 function UpcomingEventCard() {
-  const eventDate = new Date('2026-10-09T10:00:00')
+  const FALLBACK_DATE = new Date('2026-10-09T10:00:00')
+  const FALLBACK_TITLE = 'Hangul Day Celebration'
+  const FALLBACK_SUBTITLE = 'The beauty of Korean letters'
+  const FALLBACK_DATE_LABEL = '09 Oct, 2026 (Friday)'
+  const FALLBACK_LOCATION = 'DU Campus, Dibrugarh University'
+
+  const [eventDate, setEventDate] = useState<Date>(FALLBACK_DATE)
+  const [title, setTitle] = useState(FALLBACK_TITLE)
+  const [subtitle, setSubtitle] = useState(FALLBACK_SUBTITLE)
+  const [dateLabel, setDateLabel] = useState(FALLBACK_DATE_LABEL)
+  const [location, setLocation] = useState(FALLBACK_LOCATION)
+
+  useEffect(() => {
+    fetch(`${API_BASE}/events?status=upcoming`)
+      .then(r => r.json())
+      .then((data: ApiEvent[]) => {
+        const first = data[0]
+        if (!first) return
+        setEventDate(new Date(first.date_iso))
+        setTitle(first.title)
+        setSubtitle(first.korean_title ?? FALLBACK_SUBTITLE)
+        setDateLabel(first.date)
+        setLocation(first.location)
+      })
+      .catch(() => {})
+  }, [])
+
   const { days, hours, mins, secs } = useCountdown(eventDate)
 
   const countdownItems = [
@@ -92,10 +120,10 @@ function UpcomingEventCard() {
             className="font-heading font-semibold text-[#2B2B2B] mb-1 leading-snug"
             style={{ fontSize: '18px' }}
           >
-            Hangul Day Celebration
+            {title}
           </h4>
           <p className="font-sans text-[#666666] mb-4" style={{ fontSize: '13px' }}>
-            The beauty of Korean letters
+            {subtitle}
           </p>
 
           {/* Countdown timer */}
@@ -103,6 +131,7 @@ function UpcomingEventCard() {
             {countdownItems.map((item) => (
               <div key={item.label} className="flex flex-col items-center">
                 <span
+                  suppressHydrationWarning
                   className="font-sans font-bold text-[#8B1E24] leading-none"
                   style={{ fontSize: '22px' }}
                 >
@@ -122,13 +151,13 @@ function UpcomingEventCard() {
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4 flex-shrink-0" style={{ color: '#8B1E24' }} />
           <span className="font-sans text-[#444444]" style={{ fontSize: '13px' }}>
-            09 Oct, 2026 (Friday)
+            {dateLabel}
           </span>
         </div>
         <div className="flex items-center gap-2">
           <MapPin className="w-4 h-4 flex-shrink-0" style={{ color: '#8B1E24' }} />
           <span className="font-sans text-[#444444]" style={{ fontSize: '13px' }}>
-            DU Campus, Dibrugarh University
+            {location}
           </span>
         </div>
       </div>
@@ -150,34 +179,58 @@ function UpcomingEventCard() {
 
 // ─── Korean Media Picks ────────────────────────────────────────────────────────
 
-const mediaPicks = [
+const FALLBACK_MEDIA_PICKS = [
   {
+    id: 1,
     type: 'Drama',
     title: 'Crash Landing on You',
-    subtitle: '사랑의 불시착',
-    desc: 'A South Korean heiress accidentally paraglides into North Korea and falls in love.',
+    korean_title: '사랑의 불시착',
+    description: 'A South Korean heiress accidentally paraglides into North Korea and falls in love.',
     tag: 'Netflix',
-    icon: Play,
+    streaming_platform: 'Netflix',
+    is_active: true,
+    sort_order: 1,
   },
   {
+    id: 2,
     type: 'Movie',
     title: 'Parasite',
-    subtitle: '기생충',
-    desc: 'Award-winning masterpiece exploring class divide through a darkly comic lens.',
+    korean_title: '기생충',
+    description: 'Award-winning masterpiece exploring class divide through a darkly comic lens.',
     tag: 'Oscar Winner',
-    icon: Star,
+    streaming_platform: '',
+    is_active: true,
+    sort_order: 2,
   },
   {
+    id: 3,
     type: 'Book',
     title: 'Please Look After Mom',
-    subtitle: '엄마를 부탁해',
-    desc: "A profound novel about family bonds and a mother's unconditional love.",
+    korean_title: '엄마를 부탁해',
+    description: "A profound novel about family bonds and a mother's unconditional love.",
     tag: 'Bestseller',
-    icon: BookOpen,
+    streaming_platform: '',
+    is_active: true,
+    sort_order: 3,
   },
-]
+] satisfies ApiMediaPick[]
+
+const TYPE_ICON: Record<string, typeof Play> = {
+  Drama: Play,
+  Movie: Star,
+  Book: BookOpen,
+}
 
 function KoreanMediaPicks() {
+  const [mediaPicks, setMediaPicks] = useState<ApiMediaPick[]>(FALLBACK_MEDIA_PICKS)
+
+  useEffect(() => {
+    fetch(`${API_BASE}/media-picks`)
+      .then(r => r.json())
+      .then((data: ApiMediaPick[]) => { if (data?.length) setMediaPicks(data) })
+      .catch(() => {})
+  }, [])
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -207,7 +260,7 @@ function KoreanMediaPicks() {
       {/* Items */}
       <div className="flex flex-col flex-1 divide-y px-2" style={{ borderColor: '#E8DCCF' }}>
         {mediaPicks.map((pick, idx) => {
-          const Icon = pick.icon
+          const Icon = TYPE_ICON[pick.type] ?? Play
           return (
             <motion.div
               key={idx}
@@ -235,10 +288,10 @@ function KoreanMediaPicks() {
                   </span>
                 </div>
                 <p className="font-korean text-[#8B1E24] mb-1" style={{ fontSize: '12px' }}>
-                  {pick.subtitle}
+                  {pick.korean_title}
                 </p>
                 <p className="font-sans text-[#666666] leading-snug" style={{ fontSize: '12px' }}>
-                  {pick.desc}
+                  {pick.description}
                 </p>
               </div>
             </motion.div>
@@ -269,26 +322,49 @@ function KoreanMediaPicks() {
 
 // ─── New Member Spotlight ──────────────────────────────────────────────────────
 
-const members = [
+const FALLBACK_MEMBERS: ApiMember[] = [
   {
-    initials: 'PJ',
+    id: 1,
     name: 'Park Ji-won',
-    since: 'Member since Jan 2025',
-    quote: '"Learning Korean is not just about a language — it\'s about connecting hearts and cultures."',
+    initials: 'PJ',
+    role: 'Member',
+    department: '',
+    joined_month: 'Jan',
+    joined_year: 2025,
+    quote: "Learning Korean is not just about a language — it's about connecting hearts and cultures.",
     dream: 'Visit Korea',
-    word: '사랑 (Sa-rang) — Love',
+    favourite_word: '사랑 (Sa-rang) — Love',
+    photo_path: '',
+    is_spotlight: true,
+    is_active: true,
   },
   {
-    initials: 'KM',
+    id: 2,
     name: 'Kim Min-jun',
-    since: 'Member since Mar 2025',
-    quote: '"Every class brings me closer to understanding this beautiful culture."',
+    initials: 'KM',
+    role: 'Member',
+    department: '',
+    joined_month: 'Mar',
+    joined_year: 2025,
+    quote: 'Every class brings me closer to understanding this beautiful culture.',
     dream: 'Become Translator',
-    word: '친구 (Chingu) — Friend',
+    favourite_word: '친구 (Chingu) — Friend',
+    photo_path: '',
+    is_spotlight: true,
+    is_active: true,
   },
 ]
 
 function NewMemberSpotlight() {
+  const [members, setMembers] = useState<ApiMember[]>(FALLBACK_MEMBERS)
+
+  useEffect(() => {
+    fetch(`${API_BASE}/members`)
+      .then(r => r.json())
+      .then((data: ApiMember[]) => { if (data?.length) setMembers(data) })
+      .catch(() => {})
+  }, [])
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
@@ -338,7 +414,7 @@ function NewMemberSpotlight() {
                   {m.name}
                 </p>
                 <p className="font-sans text-[#666666]" style={{ fontSize: '11px' }}>
-                  {m.since}
+                  Member since {m.joined_month} {m.joined_year}
                 </p>
               </div>
               <span
@@ -354,7 +430,7 @@ function NewMemberSpotlight() {
               className="font-sans italic text-[#444444] leading-snug mb-3"
               style={{ fontSize: '12px' }}
             >
-              {m.quote}
+              &ldquo;{m.quote}&rdquo;
             </p>
 
             {/* Stats row */}
@@ -375,7 +451,7 @@ function NewMemberSpotlight() {
                   Favourite Word
                 </p>
                 <p className="font-sans text-[#2B2B2B]" style={{ fontSize: '12px' }}>
-                  {m.word}
+                  {m.favourite_word}
                 </p>
               </div>
             </div>

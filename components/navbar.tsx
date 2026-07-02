@@ -6,20 +6,19 @@ import { usePathname } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import {
   Menu, X, Sun, Users,
-  Home, Info, Calendar, Globe, BookOpen, UserCircle, Image as ImageIcon, ShoppingBag, Mail,
+  Home, Info, Calendar, Globe, BookOpen, Image as ImageIcon, ShoppingBag, Mail,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const NAV_LINKS = [
-  { href: '/',          label: 'Home',      icon: Home       },
-  { href: '/about',     label: 'About Us',  icon: Info       },
-  { href: '/events',    label: 'Events',    icon: Calendar   },
-  { href: '/culture',   label: 'Culture',   icon: Globe      },
-  { href: '/magazine',  label: 'Magazine',  icon: BookOpen   },
-  { href: '/community', label: 'Community', icon: UserCircle },
-  { href: '/gallery',   label: 'Gallery',   icon: ImageIcon  },
-  { href: '/goodies',   label: 'Goodies',   icon: ShoppingBag},
-  { href: '/contact',   label: 'Contact',   icon: Mail       },
+  { href: '/',         label: 'Home',     icon: Home       },
+  { href: '/about',    label: 'About Us', icon: Info       },
+  { href: '/events',   label: 'Events',   icon: Calendar   },
+  { href: '/culture',  label: 'Culture',  icon: Globe      },
+  { href: '/magazine', label: 'Magazine', icon: BookOpen   },
+  { href: '/gallery',  label: 'Gallery',  icon: ImageIcon  },
+  { href: '/goodies',  label: 'Goodies',  icon: ShoppingBag},
+  { href: '/contact',  label: 'Contact',  icon: Mail       },
 ]
 
 export function Navbar() {
@@ -148,7 +147,7 @@ export function Navbar() {
 
             {/* Join CTA */}
             <Link
-              href="/community"
+              href="/join"
               className="hidden lg:flex items-center gap-2 font-sans font-semibold transition-all hover:opacity-90 active:scale-95"
               style={{
                 background: scrolled ? '#FFFFFF' : '#8B1E24',

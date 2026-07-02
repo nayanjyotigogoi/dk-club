@@ -26,35 +26,31 @@ export function Footer() {
     { id: 'quick-events', label: 'Events', href: '/events' },
     { id: 'quick-korean', label: 'Learn Korean', href: '/culture' },
     { id: 'quick-gallery', label: 'Gallery', href: '/gallery' },
-    { id: 'quick-resources', label: 'Resources', href: '/culture' },
+    { id: 'quick-resources', label: 'Resources', href: '/resources' },
     { id: 'quick-contact', label: 'Contact Us', href: '/contact' },
   ]
 
   const memberArea = [
-    { id: 'member-login', label: 'Login', href: '#' },
-    { id: 'member-register', label: 'Register', href: '#' },
-    { id: 'member-dashboard', label: 'Dashboard', href: '#' },
-    { id: 'member-courses', label: 'My Courses', href: '#' },
-    { id: 'member-certs', label: 'Certificates', href: '#' },
-    { id: 'member-community', label: 'Community', href: '/community' },
-    { id: 'member-support', label: 'Help & Support', href: '#' },
+    { id: 'member-register', label: 'Join DKC', href: '/join' },
+    { id: 'member-courses', label: 'Courses', href: '/courses' },
+    { id: 'member-support', label: 'Help & Support', href: '/contact' },
   ]
 
   const resources = [
-    { id: 'res-materials', label: 'Study Materials', href: '#' },
-    { id: 'res-vocab', label: 'Vocabulary Lists', href: '#' },
-    { id: 'res-grammar', label: 'Grammar Guide', href: '#' },
-    { id: 'res-culture', label: 'Korean Culture', href: '/culture' },
-    { id: 'res-practice', label: 'Practice Exercises', href: '#' },
-    { id: 'res-books', label: 'Recommended Books', href: '#' },
-    { id: 'res-links', label: 'Useful Links', href: '#' },
+    { id: 'res-materials', label: 'Study Materials',    href: '/resources/study-materials' },
+    { id: 'res-vocab',     label: 'Vocabulary Lists',   href: '/resources/vocabulary' },
+    { id: 'res-grammar',   label: 'Grammar Guide',      href: '/resources/grammar' },
+    { id: 'res-culture',   label: 'Korean Culture',     href: '/resources/korean-culture' },
+    { id: 'res-practice',  label: 'Practice Exercises', href: '/resources/practice' },
+    { id: 'res-books',     label: 'Recommended Books',  href: '/resources/books' },
+    { id: 'res-links',     label: 'Useful Links',       href: '/resources/links' },
   ]
 
   const socialLinks = [
     {
       id: 'social-ig',
       label: 'Instagram',
-      href: '#',
+      href: 'https://www.instagram.com/dibrugarhkorean.club',
       svg: (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
@@ -87,7 +83,7 @@ export function Footer() {
     {
       id: 'social-email',
       label: 'Email',
-      href: '#',
+      href: 'connect@dibrugarhkoreanclub.com',
       svg: (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <rect x="2" y="4" width="20" height="16" rx="2"/>
