@@ -1,11 +1,11 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Inter, Cinzel, Noto_Serif_KR } from 'next/font/google'
+import { Inter, Cinzel, Noto_Sans_KR } from 'next/font/google'
 import './globals.css'
 
 const inter = Inter({ variable: '--font-sans', subsets: ['latin'] })
 const cinzel = Cinzel({ variable: '--font-heading', subsets: ['latin'], weight: ['600'] })
-const notoSerifKr = Noto_Serif_KR({ variable: '--font-korean', subsets: ['korean'], weight: ['400', '700'] })
+const notoSerifKr = Noto_Sans_KR({ variable: '--font-korean', subsets: ['latin'], weight: ['400', '700'] })
 
 export const metadata: Metadata = {
   title: 'Dibrugarh Korean Club',
