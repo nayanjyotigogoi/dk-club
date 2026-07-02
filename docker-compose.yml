@@ -1,0 +1,17 @@
+services:
+  koreanclub_frontend:
+    container_name: koreanclub_frontend
+
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_APP_NAME: Dibrugarh Korean Club
+        NEXT_PUBLIC_API_URL: https://dibrugarhkoreanclub.online/api
+        NEXT_PUBLIC_BACKEND_URL: https://dibrugarhkoreanclub.online
+        NEXT_PUBLIC_STORAGE_URL: https://dibrugarhkoreanclub.online/storage
+
+    restart: unless-stopped
+
+    ports:
+      - "3007:3000"
