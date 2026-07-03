@@ -127,7 +127,7 @@ function RegisterCard() {
         Become a member of Dibrugarh Korean Club and unlock events, resources, and a community of culture lovers.
       </p>
       <Link
-        href="/community"
+        href="/join"
         className="inline-flex items-center gap-1.5 font-sans font-semibold text-xs text-white rounded-full px-4 py-2 self-start transition-all hover:shadow-md active:scale-95"
         style={{ background: '#8B1E24' }}
       >

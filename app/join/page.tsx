@@ -141,7 +141,7 @@ export default function JoinPage() {
       const res = await fetch(`${API_BASE}/apply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, website: '' }),
       })
       const data = await res.json()
       if (!res.ok) {

@@ -16,6 +16,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'dibrugarhkoreanclub.online',
       },
+      {
+        protocol: 'https',
+        hostname: 'api.dibrugarhkoreanclub.com',
+      },
     ],
   },
 
@@ -36,8 +40,8 @@ const nextConfig = {
               "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com data:",
-              "img-src 'self' data: blob: http://localhost:8000 https://dibrugarhkoreanclub.online",
-              "connect-src 'self' http://localhost:8000 https://dibrugarhkoreanclub.online",
+              "img-src 'self' data: blob: http://localhost:8000 https://dibrugarhkoreanclub.online https://api.dibrugarhkoreanclub.com",
+              "connect-src 'self' http://localhost:8000 https://dibrugarhkoreanclub.online https://api.dibrugarhkoreanclub.com",
               "frame-ancestors 'none'",
             ].join('; '),
           },

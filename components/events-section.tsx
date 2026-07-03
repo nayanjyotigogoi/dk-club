@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { Calendar, MapPin, Play, Star, BookOpen } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Calendar, MapPin, Play, Star, BookOpen, X, CheckCircle2 } from 'lucide-react'
 import { API_BASE, type ApiEvent, type ApiMediaPick, type ApiMember } from '@/lib/api'
 
 // ─── Countdown ────────────────────────────────────────────────────────────────
@@ -43,6 +43,12 @@ function UpcomingEventCard() {
   const [subtitle, setSubtitle] = useState(FALLBACK_SUBTITLE)
   const [dateLabel, setDateLabel] = useState(FALLBACK_DATE_LABEL)
   const [location, setLocation] = useState(FALLBACK_LOCATION)
+  const [eventSlug, setEventSlug] = useState<string | null>(null)
+
+  const [showModal, setShowModal] = useState(false)
+  const [regState, setRegState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
+  const [regErrors, setRegErrors] = useState<Record<string, string[]>>({})
+  const [form, setForm] = useState({ full_name: '', email: '', phone: '', department: '', message: '' })
 
   useEffect(() => {
     fetch(`${API_BASE}/events?status=upcoming`)
@@ -55,9 +61,28 @@ function UpcomingEventCard() {
         setSubtitle(first.korean_title ?? FALLBACK_SUBTITLE)
         setDateLabel(first.date)
         setLocation(first.location)
+        setEventSlug(first.slug)
       })
       .catch(() => {})
   }, [])
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setRegState('loading')
+    setRegErrors({})
+    try {
+      const res = await fetch(`${API_BASE}/event-register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, event_slug: eventSlug ?? 'unknown', event_title: title, website: '' }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setRegErrors(data.errors ?? {}); setRegState('error'); return }
+      setRegState('success')
+    } catch {
+      setRegState('error')
+    }
+  }
 
   const { days, hours, mins, secs } = useCountdown(eventDate)
 
@@ -69,6 +94,7 @@ function UpcomingEventCard() {
   ]
 
   return (
+    <>
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -167,13 +193,110 @@ function UpcomingEventCard() {
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          className="w-full font-sans font-semibold text-white rounded-[22px] py-3 transition-colors"
-          style={{ background: '#8B1E24', fontSize: '15px', height: '44px' }}
+          onClick={() => { setShowModal(true); setRegState('idle'); setRegErrors({}); setForm({ full_name: '', email: '', phone: '', department: '', message: '' }) }}
+          className="w-full font-sans font-semibold text-white rounded-[22px] py-3 transition-colors text-center"
+          style={{ background: '#8B1E24', fontSize: '15px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
         >
           Register Now
         </motion.button>
       </div>
     </motion.div>
+
+    {/* Registration Modal */}
+    <AnimatePresence>
+      {showModal && (
+        <motion.div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          onClick={() => setShowModal(false)}
+        >
+          <motion.div
+            className="relative w-full max-w-md rounded-2xl overflow-hidden"
+            style={{ background: '#fff' }}
+            initial={{ scale: 0.93, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.93, opacity: 0 }}
+            transition={{ duration: 0.22 }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="px-7 pt-7 pb-5" style={{ borderBottom: '1px solid #F0EBE4' }}>
+              <button
+                onClick={() => setShowModal(false)}
+                className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full"
+                style={{ background: '#FAF3ED' }}
+              >
+                <X className="w-4 h-4" style={{ color: '#8B1E24' }} />
+              </button>
+              <p className="font-sans text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: '#8B1E24' }}>Event Registration</p>
+              <h2 className="font-heading font-bold text-[#2B2B2B] text-lg leading-snug">{title}</h2>
+            </div>
+
+            {regState === 'success' ? (
+              <div className="px-7 py-10 text-center">
+                <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: '#FAF3ED' }}>
+                  <CheckCircle2 className="w-7 h-7" style={{ color: '#8B1E24' }} />
+                </div>
+                <h3 className="font-heading font-bold text-[#2B2B2B] text-lg mb-2">You&apos;re Registered!</h3>
+                <p className="font-sans text-[#666] text-sm leading-relaxed mb-6">
+                  Check your email for a confirmation. We&apos;ll see you at the event! 🎉
+                </p>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="font-sans font-semibold text-white text-sm px-6 py-2.5 rounded-full"
+                  style={{ background: '#8B1E24' }}
+                >
+                  Close
+                </button>
+              </div>
+            ) : (
+              <form onSubmit={handleRegister} className="px-7 py-6 space-y-4">
+                <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
+                {([
+                  { key: 'full_name', label: 'Full Name *', type: 'text', required: true },
+                  { key: 'email', label: 'Email Address *', type: 'email', required: true },
+                  { key: 'phone', label: 'Phone (optional)', type: 'tel', required: false },
+                  { key: 'department', label: 'Department / Course (optional)', type: 'text', required: false },
+                ] as { key: keyof typeof form; label: string; type: string; required: boolean }[]).map(({ key, label, type, required }) => (
+                  <div key={key}>
+                    <label className="block font-sans text-xs font-semibold text-[#555] mb-1">{label}</label>
+                    <input
+                      type={type}
+                      required={required}
+                      value={form[key]}
+                      onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+                      className="w-full font-sans text-sm px-4 py-2.5 rounded-xl outline-none transition-all"
+                      style={{ border: regErrors[key] ? '1.5px solid #c0392b' : '1.5px solid #E8DCCF', background: '#FAFAFA' }}
+                    />
+                    {regErrors[key] && <p className="font-sans text-xs text-red-600 mt-1">{regErrors[key][0]}</p>}
+                  </div>
+                ))}
+                <div>
+                  <label className="block font-sans text-xs font-semibold text-[#555] mb-1">Message (optional)</label>
+                  <textarea
+                    rows={3}
+                    value={form.message}
+                    onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+                    className="w-full font-sans text-sm px-4 py-2.5 rounded-xl outline-none resize-none"
+                    style={{ border: '1.5px solid #E8DCCF', background: '#FAFAFA' }}
+                  />
+                </div>
+                {regState === 'error' && Object.keys(regErrors).length === 0 && (
+                  <p className="font-sans text-xs text-red-600">Something went wrong. Please try again.</p>
+                )}
+                <button
+                  type="submit"
+                  disabled={regState === 'loading'}
+                  className="w-full font-sans font-semibold text-white text-sm py-3 rounded-xl transition-all"
+                  style={{ background: '#8B1E24', opacity: regState === 'loading' ? 0.7 : 1 }}
+                >
+                  {regState === 'loading' ? 'Registering…' : 'Confirm Registration'}
+                </button>
+              </form>
+            )}
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+    </>
   )
 }
 
@@ -301,20 +424,25 @@ function KoreanMediaPicks() {
 
       {/* Footer CTA */}
       <div className="px-6 py-5">
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="w-full font-sans font-semibold rounded-[22px] py-3 border-2 transition-colors"
-          style={{
-            borderColor: '#8B1E24',
-            color: '#8B1E24',
-            background: 'transparent',
-            fontSize: '14px',
-            height: '44px',
-          }}
-        >
-          Explore All Media
-        </motion.button>
+        <Link href="/culture">
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full font-sans font-semibold rounded-[22px] py-3 border-2 transition-colors text-center"
+            style={{
+              borderColor: '#8B1E24',
+              color: '#8B1E24',
+              background: 'transparent',
+              fontSize: '14px',
+              height: '44px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            Explore All Media
+          </motion.div>
+        </Link>
       </div>
     </motion.div>
   )
@@ -461,14 +589,16 @@ function NewMemberSpotlight() {
 
       {/* Footer CTA */}
       <div className="px-6 pb-6 mt-auto">
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          className="w-full font-sans font-semibold text-white rounded-[22px] py-3 transition-colors"
-          style={{ background: '#8B1E24', fontSize: '14px', height: '44px' }}
-        >
-          Join Our Community
-        </motion.button>
+        <Link href="/join">
+          <motion.div
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="w-full font-sans font-semibold text-white rounded-[22px] py-3 transition-colors text-center"
+            style={{ background: '#8B1E24', fontSize: '14px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            Join Our Community
+          </motion.div>
+        </Link>
       </div>
     </motion.div>
   )

@@ -8,6 +8,17 @@ import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { type ApiGalleryPhoto, API_BASE } from '@/lib/api'
 
+// Derive backend root from the API URL (strip /api/v1)
+const BACKEND_URL = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api/v1')
+  .replace(/\/api\/v1\/?$/, '')
+  .replace(/\/$/, '')
+
+function getImageUrl(photo: ApiGalleryPhoto): string | null {
+  if (!photo.image_path) return null
+  if (photo.image_path.startsWith('http')) return photo.image_path
+  return `${BACKEND_URL}/gallery/images/${photo.image_path}`
+}
+
 type GalleryCategory = 'all' | 'events' | 'culture' | 'members' | 'campus'
 
 const FILTERS: { key: GalleryCategory; label: string }[] = [
@@ -96,18 +107,27 @@ export default function GalleryPage() {
                     className="relative rounded-xl overflow-hidden"
                     style={{ height: HEIGHT_MAP[photo.aspect] }}
                   >
-                    {/* Colour card standing in for the photo */}
-                    <div
-                      className="w-full h-full flex items-center justify-center"
-                      style={{ background: photo.color }}
-                    >
-                      <span
-                        className="font-korean font-bold select-none"
-                        style={{ fontSize: 72, color: '#8B1E24', opacity: 0.12, lineHeight: 1 }}
+                    {/* Real photo or colour placeholder */}
+                    {getImageUrl(photo) ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={getImageUrl(photo)!}
+                        alt={photo.caption}
+                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <div
+                        className="w-full h-full flex items-center justify-center"
+                        style={{ background: photo.color }}
                       >
-                        {photo.icon}
-                      </span>
-                    </div>
+                        <span
+                          className="font-korean font-bold select-none"
+                          style={{ fontSize: 72, color: '#8B1E24', opacity: 0.12, lineHeight: 1 }}
+                        >
+                          {photo.icon}
+                        </span>
+                      </div>
+                    )}
 
                     {/* Hover overlay */}
                     <div
@@ -163,17 +183,28 @@ export default function GalleryPage() {
                 transition={{ duration: 0.25 }}
                 onClick={e => e.stopPropagation()}
               >
-                {/* Large colour card */}
-                <div
-                  className="w-full flex items-center justify-center"
-                  style={{ height: 340, background: lightbox.color }}
-                >
-                  <span
-                    className="font-korean font-bold select-none"
-                    style={{ fontSize: 140, color: '#8B1E24', opacity: 0.1, lineHeight: 1 }}
-                  >
-                    {lightbox.icon}
-                  </span>
+                {/* Real photo or colour placeholder */}
+                <div className="w-full relative" style={{ height: 340 }}>
+                  {getImageUrl(lightbox) ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={getImageUrl(lightbox)!}
+                      alt={lightbox.caption}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div
+                      className="w-full h-full flex items-center justify-center"
+                      style={{ background: lightbox.color }}
+                    >
+                      <span
+                        className="font-korean font-bold select-none"
+                        style={{ fontSize: 140, color: '#8B1E24', opacity: 0.1, lineHeight: 1 }}
+                      >
+                        {lightbox.icon}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Caption bar */}

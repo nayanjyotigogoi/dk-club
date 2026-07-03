@@ -87,7 +87,16 @@
       "Bash(powershell -command \"\\(Get-Item 'E:\\\\Demo\\\\dibrugarh-korean-club-website\\\\public\\\\hero-illustration.png'\\).Length\")",
       "Bash(powershell -command \"\\(Get-Item 'E:\\\\Demo\\\\dibrugarh-korean-club-website\\\\public\\\\1-hero-illustration.png'\\).Length\")",
       "Bash(curl -s \"http://localhost:8000/api/v1/events?status=upcoming\")",
-      "Bash(python -m json.tool)"
+      "Bash(python -m json.tool)",
+      "Bash(curl -I \"http://localhost:8000/gallery/images/G4wHOS6ckdYvK1bsgaQTMVncDpvLAb-metaY2hhdGJvdC5wbmc=-.png\")",
+      "Bash(php artisan tinker '--execute= *)",
+      "Bash(curl -s \"http://localhost:8000/api/v1/gallery\")",
+      "Bash(python -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(p['id'], p['image_url']\\) for p in data]\")",
+      "Bash(python -c \"import json,sys; [print\\('id:',p['id'],'image_path:',p['image_path']\\) for p in json.load\\(sys.stdin\\) if p['image_path']]\")",
+      "Bash(Remove-Item -Recurse -Force \"E:\\\\Demo\\\\dibrugarh-korean-club-website\\\\.next\" -ErrorAction SilentlyContinue)",
+      "Bash(git checkout *)",
+      "Bash(Write-Output \"done\")",
+      "PowerShell(Get-ChildItem \"$env:LOCALAPPDATA\\\\turbopack\" -ErrorAction SilentlyContinue | Select-Object Name; Get-ChildItem \"$env:USERPROFILE\\\\.cache\\\\turbopack\" -ErrorAction SilentlyContinue | Select-Object Name; Get-ChildItem \"E:\\\\Demo\\\\dibrugarh-korean-club-website\\\\node_modules\\\\.cache\" -ErrorAction SilentlyContinue | Select-Object Name)"
     ]
   }
 }

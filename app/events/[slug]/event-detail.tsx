@@ -3,16 +3,42 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-import { motion } from 'framer-motion'
-import { Calendar, MapPin, Clock, ArrowLeft, CheckCircle2, ChevronRight } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Calendar, MapPin, Clock, ArrowLeft, CheckCircle2, ChevronRight, X } from 'lucide-react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { type ApiEvent, API_BASE } from '@/lib/api'
+
+type RegForm = { full_name: string; email: string; phone: string; department: string; message: string }
+type RegState = 'idle' | 'loading' | 'success' | 'error'
 
 export function EventDetail({ slug }: { slug: string }) {
   const [event, setEvent] = useState<ApiEvent | null>(null)
   const [notFoundState, setNotFoundState] = useState(false)
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, mins: 0, secs: 0 })
+  const [showModal, setShowModal] = useState(false)
+  const [regState, setRegState] = useState<RegState>('idle')
+  const [regErrors, setRegErrors] = useState<Record<string, string[]>>({})
+  const [form, setForm] = useState<RegForm>({ full_name: '', email: '', phone: '', department: '', message: '' })
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!event) return
+    setRegState('loading')
+    setRegErrors({})
+    try {
+      const res = await fetch(`${API_BASE}/event-register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...form, event_slug: slug, event_title: event.title, website: '' }),
+      })
+      const data = await res.json()
+      if (!res.ok) { setRegErrors(data.errors ?? {}); setRegState('error'); return }
+      setRegState('success')
+    } catch {
+      setRegState('error')
+    }
+  }
 
   useEffect(() => {
     fetch(`${API_BASE}/events/${slug}`)
@@ -182,13 +208,13 @@ export function EventDetail({ slug }: { slug: string }) {
 
               {/* CTA */}
               {isUpcoming ? (
-                <Link
-                  href="/contact"
+                <button
+                  onClick={() => { setShowModal(true); setRegState('idle'); setRegErrors({}) }}
                   className="flex items-center justify-center gap-2 w-full font-sans font-semibold text-white rounded-2xl transition-all hover:shadow-lg"
                   style={{ background: '#8B1E24', height: 52, fontSize: '15px' }}
                 >
                   Register Now
-                </Link>
+                </button>
               ) : (
                 <div
                   className="flex items-center justify-center gap-2 w-full font-sans font-medium text-[#888] rounded-2xl"
@@ -211,6 +237,107 @@ export function EventDetail({ slug }: { slug: string }) {
 
       </main>
       <Footer />
+
+      {/* Registration Modal */}
+      <AnimatePresence>
+        {showModal && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            onClick={() => setShowModal(false)}
+          >
+            <motion.div
+              className="relative w-full max-w-md rounded-2xl overflow-hidden"
+              style={{ background: '#fff' }}
+              initial={{ scale: 0.93, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.93, opacity: 0 }}
+              transition={{ duration: 0.22 }}
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="px-7 pt-7 pb-5" style={{ borderBottom: '1px solid #F0EBE4' }}>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full"
+                  style={{ background: '#FAF3ED' }}
+                >
+                  <X className="w-4 h-4" style={{ color: '#8B1E24' }} />
+                </button>
+                <p className="font-sans text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: '#8B1E24' }}>Event Registration</p>
+                <h2 className="font-heading font-bold text-[#2B2B2B] text-lg leading-snug">{event?.title}</h2>
+              </div>
+
+              {regState === 'success' ? (
+                <div className="px-7 py-10 text-center">
+                  <div className="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style={{ background: '#FAF3ED' }}>
+                    <CheckCircle2 className="w-7 h-7" style={{ color: '#8B1E24' }} />
+                  </div>
+                  <h3 className="font-heading font-bold text-[#2B2B2B] text-lg mb-2">You&apos;re Registered!</h3>
+                  <p className="font-sans text-[#666] text-sm leading-relaxed mb-6">
+                    Check your email for a confirmation. We&apos;ll see you at the event! 🎉
+                  </p>
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="font-sans font-semibold text-white text-sm px-6 py-2.5 rounded-full"
+                    style={{ background: '#8B1E24' }}
+                  >
+                    Close
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleRegister} className="px-7 py-6 space-y-4">
+                  {/* honeypot */}
+                  <input type="text" name="website" className="hidden" tabIndex={-1} autoComplete="off" />
+
+                  {[
+                    { key: 'full_name', label: 'Full Name *', type: 'text', required: true },
+                    { key: 'email', label: 'Email Address *', type: 'email', required: true },
+                    { key: 'phone', label: 'Phone (optional)', type: 'tel', required: false },
+                    { key: 'department', label: 'Department / Course (optional)', type: 'text', required: false },
+                  ].map(({ key, label, type, required }) => (
+                    <div key={key}>
+                      <label className="block font-sans text-xs font-semibold text-[#555] mb-1">{label}</label>
+                      <input
+                        type={type}
+                        required={required}
+                        value={form[key as keyof RegForm]}
+                        onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))}
+                        className="w-full font-sans text-sm px-4 py-2.5 rounded-xl outline-none transition-all"
+                        style={{ border: regErrors[key] ? '1.5px solid #c0392b' : '1.5px solid #E8DCCF', background: '#FAFAFA' }}
+                      />
+                      {regErrors[key] && <p className="font-sans text-xs text-red-600 mt-1">{regErrors[key][0]}</p>}
+                    </div>
+                  ))}
+
+                  <div>
+                    <label className="block font-sans text-xs font-semibold text-[#555] mb-1">Message (optional)</label>
+                    <textarea
+                      rows={3}
+                      value={form.message}
+                      onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+                      className="w-full font-sans text-sm px-4 py-2.5 rounded-xl outline-none resize-none"
+                      style={{ border: '1.5px solid #E8DCCF', background: '#FAFAFA' }}
+                    />
+                  </div>
+
+                  {regState === 'error' && Object.keys(regErrors).length === 0 && (
+                    <p className="font-sans text-xs text-red-600">Something went wrong. Please try again.</p>
+                  )}
+
+                  <button
+                    type="submit"
+                    disabled={regState === 'loading'}
+                    className="w-full font-sans font-semibold text-white text-sm py-3 rounded-xl transition-all"
+                    style={{ background: '#8B1E24', opacity: regState === 'loading' ? 0.7 : 1 }}
+                  >
+                    {regState === 'loading' ? 'Registering…' : 'Confirm Registration'}
+                  </button>
+                </form>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   )
 }
