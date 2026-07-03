@@ -7,12 +7,10 @@ import { PageHero } from '@/components/page-hero'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { type ApiGalleryPhoto, API_BASE } from '@/lib/api'
-
-// Derive backend root from the API URL (strip /api/v1)
-const BACKEND_URL = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api/v1')
+const BACKEND_URL = (process.env.NEXT_PUBLIC_API_URL ?? 'https://dibrugarhkoreanclub.com/api/v1')
   .replace(/\/api\/v1\/?$/, '')
   .replace(/\/$/, '')
-
+  
 function getImageUrl(photo: ApiGalleryPhoto): string | null {
   if (!photo.image_path) return null
   if (photo.image_path.startsWith('http')) return photo.image_path
@@ -113,7 +111,7 @@ export default function GalleryPage() {
                       <img
                         src={getImageUrl(photo)!}
                         alt={photo.caption}
-                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+                        className="w-full h-full object-cover"
                       />
                     ) : (
                       <div

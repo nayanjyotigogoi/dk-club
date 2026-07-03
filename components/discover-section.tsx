@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
   BookOpen,
@@ -101,6 +102,7 @@ function MagazineCard() {
 
 // ─── Register card ─────────────────────────────────────────────────────────────
 function RegisterCard() {
+  const router = useRouter()
   return (
     <div
       className="flex flex-col h-full rounded-2xl p-5"
@@ -126,14 +128,14 @@ function RegisterCard() {
       <p className="font-sans text-xs text-[#666666] leading-relaxed flex-1 mb-4">
         Become a member of Dibrugarh Korean Club and unlock events, resources, and a community of culture lovers.
       </p>
-      <Link
-        href="/join"
+      <button
+        onClick={() => router.push('/join')}
         className="inline-flex items-center gap-1.5 font-sans font-semibold text-xs text-white rounded-full px-4 py-2 self-start transition-all hover:shadow-md active:scale-95"
         style={{ background: '#8B1E24' }}
       >
         Register Now
         <ArrowRight className="w-3 h-3" />
-      </Link>
+      </button>
     </div>
   )
 }

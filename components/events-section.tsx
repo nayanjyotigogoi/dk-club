@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar, MapPin, Play, Star, BookOpen, X, CheckCircle2 } from 'lucide-react'
 import { API_BASE, type ApiEvent, type ApiMediaPick, type ApiMember } from '@/lib/api'
@@ -345,6 +346,7 @@ const TYPE_ICON: Record<string, typeof Play> = {
 }
 
 function KoreanMediaPicks() {
+  const router = useRouter()
   const [mediaPicks, setMediaPicks] = useState<ApiMediaPick[]>(FALLBACK_MEDIA_PICKS)
 
   useEffect(() => {
@@ -424,25 +426,24 @@ function KoreanMediaPicks() {
 
       {/* Footer CTA */}
       <div className="px-6 py-5">
-        <Link href="/culture">
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full font-sans font-semibold rounded-[22px] py-3 border-2 transition-colors text-center"
-            style={{
-              borderColor: '#8B1E24',
-              color: '#8B1E24',
-              background: 'transparent',
-              fontSize: '14px',
-              height: '44px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            Explore All Media
-          </motion.div>
-        </Link>
+        <motion.button
+          onClick={() => router.push('/culture')}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full font-sans font-semibold rounded-[22px] py-3 border-2 transition-colors text-center"
+          style={{
+            borderColor: '#8B1E24',
+            color: '#8B1E24',
+            background: 'transparent',
+            fontSize: '14px',
+            height: '44px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          Explore All Media
+        </motion.button>
       </div>
     </motion.div>
   )
@@ -484,6 +485,7 @@ const FALLBACK_MEMBERS: ApiMember[] = [
 ]
 
 function NewMemberSpotlight() {
+  const router = useRouter()
   const [members, setMembers] = useState<ApiMember[]>(FALLBACK_MEMBERS)
 
   useEffect(() => {
@@ -589,16 +591,15 @@ function NewMemberSpotlight() {
 
       {/* Footer CTA */}
       <div className="px-6 pb-6 mt-auto">
-        <Link href="/join">
-          <motion.div
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full font-sans font-semibold text-white rounded-[22px] py-3 transition-colors text-center"
-            style={{ background: '#8B1E24', fontSize: '14px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-          >
-            Join Our Community
-          </motion.div>
-        </Link>
+        <motion.button
+          onClick={() => router.push('/join')}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
+          className="w-full font-sans font-semibold text-white rounded-[22px] py-3 transition-colors text-center"
+          style={{ background: '#8B1E24', fontSize: '14px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+        >
+          Join Our Community
+        </motion.button>
       </div>
     </motion.div>
   )
