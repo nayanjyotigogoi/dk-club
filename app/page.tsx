@@ -22,6 +22,7 @@ import { HeroSection } from '@/components/hero-section'
 import { StatsBar } from '@/components/stats-bar-wrapper'
 import { KoreanPhraseWall } from '@/components/korean-phrase-wall'
 import { HomeDynamicSections } from '@/components/home-dynamic-sections'
+import { LearnPromoSection } from '@/components/learn-promo-section'
 import { CommunitySection } from '@/components/community-section'
 import { Footer } from '@/components/footer'
 
@@ -33,6 +34,7 @@ export default function Home() {
       <StatsBar />
       <KoreanPhraseWall />
       <HomeDynamicSections />
+      <LearnPromoSection />
       <CommunitySection />
       <Footer />
     </>

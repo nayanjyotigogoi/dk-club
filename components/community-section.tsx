@@ -4,44 +4,70 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Lightbulb, Sparkles } from 'lucide-react'
-import { API_BASE, type ApiFunFact } from '@/lib/api'
+import { API_BASE, type ApiFunFact, type ApiGalleryPhoto } from '@/lib/api'
 
 // ─── Moments Together ─────────────────────────────────────────────────────────
 
-const moments = [
-  {
-    id: 1,
-    src: '/cherry-blossoms.png',
-    caption: 'Hangul Day 2024',
-    span: 'row-span-2',
-  },
-  {
-    id: 2,
-    src: '/hanok-pavilion.png',
-    caption: 'Cultural Fest',
-    span: '',
-  },
-  {
-    id: 3,
-    src: '/cherry-blossoms.png',
-    caption: 'Language Camp',
-    span: '',
-  },
-  {
-    id: 4,
-    src: '/hanok-pavilion.png',
-    caption: 'K-Food Night',
-    span: '',
-  },
-  {
-    id: 5,
-    src: '/cherry-blossoms.png',
-    caption: 'Movie Screening',
-    span: '',
-  },
+const BACKEND_URL = (process.env.NEXT_PUBLIC_BACKEND_URL ?? 'https://dibrugarhkoreanclub.com')
+  .replace(/\/api\/v1\/?$/, '')
+  .replace(/\/$/, '')
+
+// Shown only when gallery API is unreachable or returns no photos
+const FALLBACK_MOMENTS = [
+  { id: 1, src: '/cherry-blossoms.png', caption: 'Hangul Day 2024' },
+  { id: 2, src: '/hanok-pavilion.png',  caption: 'Cultural Fest'   },
+  { id: 3, src: '/cherry-blossoms.png', caption: 'Language Camp'   },
+  { id: 4, src: '/hanok-pavilion.png',  caption: 'K-Food Night'    },
+  { id: 5, src: '/cherry-blossoms.png', caption: 'Movie Screening' },
 ]
 
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
+type Moment = { id: number; src: string | null; caption: string; color?: string; icon?: string }
+
 function MomentsTogether() {
+  // null = still loading (show skeleton); array = ready to render
+  const [moments, setMoments] = useState<Moment[] | null>(null)
+
+  useEffect(() => {
+    fetch(`${API_BASE}/gallery`)
+      .then(r => r.json())
+      .then((data: ApiGalleryPhoto[]) => {
+        if (!Array.isArray(data) || !data.length) {
+          setMoments(FALLBACK_MOMENTS)
+          return
+        }
+
+        const toMoment = (p: ApiGalleryPhoto): Moment => ({
+          id:      p.id,
+          caption: p.caption,
+          color:   p.color ?? undefined,
+          icon:    p.icon  ?? undefined,
+          src: p.image_path?.startsWith('http')
+            ? p.image_path
+            : p.image_path
+              ? `${BACKEND_URL}/gallery/images/${p.image_path}`
+              : null,
+        })
+
+        // Always show photos-with-images first so the grid isn't empty-looking.
+        // Shuffle within each group for variety, then fill up to 5.
+        const withPhoto    = shuffle(data.filter(p => p.image_path))
+        const withoutPhoto = shuffle(data.filter(p => !p.image_path))
+        const ordered      = [...withPhoto, ...withoutPhoto]
+
+        setMoments(ordered.slice(0, 5).map(toMoment))
+      })
+      .catch(() => setMoments(FALLBACK_MOMENTS))
+  }, [])
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -75,46 +101,62 @@ function MomentsTogether() {
         </span>
       </div>
 
-      {/* Photo grid */}
+      {/* Photo grid — skeleton while loading, live photos once fetched */}
       <div className="flex-1 grid grid-cols-3 grid-rows-2 gap-1.5 px-5 pb-5" style={{ minHeight: '220px' }}>
-        {/* Large left tile */}
-        <motion.div
-          whileHover={{ scale: 1.02 }}
-          transition={{ duration: 0.2 }}
-          className="relative rounded-xl overflow-hidden row-span-2 cursor-pointer group"
-        >
-          <Image
-            src={moments[0].src}
-            alt={moments[0].caption}
-            fill
-            className="object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-          <span className="absolute bottom-2 left-2 font-sans text-white text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-            {moments[0].caption}
-          </span>
-        </motion.div>
+        {(moments === null || moments.length === 0) ? (
+          // Loading / empty skeleton — same grid shape, no hardcoded images
+          <>
+            <div className="rounded-xl row-span-2 animate-pulse" style={{ background: '#E8DCCF' }} />
+            {[1,2,3,4].map(i => (
+              <div key={i} className="rounded-xl animate-pulse" style={{ background: '#E8DCCF' }} />
+            ))}
+          </>
+        ) : (
+          <>
+            {/* Large left tile */}
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+              className="relative rounded-xl overflow-hidden row-span-2 cursor-pointer group"
+            >
+              {moments[0].src ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={moments[0].src} alt={moments[0].caption} className="w-full h-full object-cover" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center" style={{ background: moments[0].color ?? '#E8DCCF' }}>
+                  <span className="font-korean font-bold select-none" style={{ fontSize: 48, color: '#8B1E24', opacity: 0.15 }}>{moments[0].icon}</span>
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <span className="absolute bottom-2 left-2 font-sans text-white text-[10px] font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                {moments[0].caption}
+              </span>
+            </motion.div>
 
-        {/* Four smaller tiles */}
-        {moments.slice(1).map((m) => (
-          <motion.div
-            key={m.id}
-            whileHover={{ scale: 1.04 }}
-            transition={{ duration: 0.2 }}
-            className="relative rounded-xl overflow-hidden cursor-pointer group"
-          >
-            <Image
-              src={m.src}
-              alt={m.caption}
-              fill
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <span className="absolute bottom-1 left-1.5 font-sans text-white text-[9px] font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-              {m.caption}
-            </span>
-          </motion.div>
-        ))}
+            {/* Four smaller tiles */}
+            {moments.slice(1).map((m) => (
+              <motion.div
+                key={m.id}
+                whileHover={{ scale: 1.04 }}
+                transition={{ duration: 0.2 }}
+                className="relative rounded-xl overflow-hidden cursor-pointer group"
+              >
+                {m.src ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={m.src} alt={m.caption} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center" style={{ background: m.color ?? '#E8DCCF' }}>
+                    <span className="font-korean font-bold select-none" style={{ fontSize: 32, color: '#8B1E24', opacity: 0.15 }}>{m.icon}</span>
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="absolute bottom-1 left-1.5 font-sans text-white text-[9px] font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                  {m.caption}
+                </span>
+              </motion.div>
+            ))}
+          </>
+        )}
       </div>
     </motion.div>
   )

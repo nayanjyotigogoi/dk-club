@@ -65,13 +65,99 @@ export const viewport: Viewport = {
   ],
 }
 
+// ─── JSON-LD structured data ──────────────────────────────────────────────────
+
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': ['Organization', 'EducationalOrganization'],
+      '@id': 'https://dibrugarhkoreanclub.com/#organization',
+      name: 'Dibrugarh Korean Club',
+      alternateName: 'DKC',
+      url: 'https://dibrugarhkoreanclub.com',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://dibrugarhkoreanclub.com/icon.svg',
+        width: 512,
+        height: 512,
+      },
+      image: 'https://dibrugarhkoreanclub.com/og-image.png',
+      description:
+        'Student-led Korean language and culture club at Dibrugarh University, Assam, India. Offers structured Korean lessons, cultural events, K-pop and K-drama community activities.',
+      foundingDate: '2023',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Dibrugarh',
+        addressRegion: 'Assam',
+        addressCountry: 'IN',
+      },
+      areaServed: {
+        '@type': 'Place',
+        name: 'Assam, Northeast India',
+      },
+      knowsAbout: [
+        'Korean Language',
+        'Korean Culture',
+        'K-pop',
+        'K-drama',
+        'Hallyu',
+        'Hangul',
+        'Korean Cuisine',
+      ],
+      sameAs: [],
+    },
+    {
+      '@type': 'WebSite',
+      '@id': 'https://dibrugarhkoreanclub.com/#website',
+      url: 'https://dibrugarhkoreanclub.com',
+      name: 'Dibrugarh Korean Club',
+      publisher: { '@id': 'https://dibrugarhkoreanclub.com/#organization' },
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: 'https://dibrugarhkoreanclub.com/learn/search?q={search_term_string}',
+        },
+        'query-input': 'required name=search_term_string',
+      },
+    },
+    {
+      '@type': 'Course',
+      '@id': 'https://dibrugarhkoreanclub.com/learn#course',
+      name: 'Korean Language Course — Assamese & English Medium',
+      description:
+        'Free structured Korean language course with Assamese and English explanations. Covers Hangul, vocabulary, grammar, conversations, and quizzes across beginner to intermediate levels.',
+      url: 'https://dibrugarhkoreanclub.com/learn',
+      provider: { '@id': 'https://dibrugarhkoreanclub.com/#organization' },
+      educationalLevel: 'Beginner to Intermediate',
+      inLanguage: ['en', 'as', 'ko'],
+      isAccessibleForFree: true,
+      courseMode: 'online',
+      teaches: [
+        'Korean alphabet (Hangul)',
+        'Korean vocabulary',
+        'Korean grammar',
+        'Korean conversations',
+        'Korean culture',
+      ],
+    },
+  ],
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${cinzel.variable} ${notoSerifKr.variable} bg-background`}>
+    <html lang="en-IN" className={`${inter.variable} ${cinzel.variable} ${notoSerifKr.variable} bg-background`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
+      </head>
       <body className="font-sans antialiased text-foreground">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}

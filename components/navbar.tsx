@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import {
   Menu, X, Sun, Users,
-  Home, Info, Calendar, Globe, BookOpen, Image as ImageIcon, ShoppingBag, Mail,
+  Home, Info, Calendar, Globe, BookOpen, Image as ImageIcon, ShoppingBag, Mail, GraduationCap,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -18,6 +18,7 @@ const NAV_LINKS = [
   { href: '/magazine', label: 'Magazine', icon: BookOpen   },
   { href: '/gallery',  label: 'Gallery',  icon: ImageIcon  },
   { href: '/goodies',  label: 'Goodies',  icon: ShoppingBag},
+  { href: '/learn',    label: 'Learn',    icon: GraduationCap },
   { href: '/contact',  label: 'Contact',  icon: Mail       },
 ]
 
@@ -44,6 +45,7 @@ export function Navbar() {
 
   return (
     <motion.div
+      initial={false}
       animate={{ y: visible ? 0 : '-120%' }}
       transition={{ duration: 0.3, ease: 'easeInOut' }}
       className="fixed top-0 left-0 right-0 z-50"
@@ -98,14 +100,14 @@ export function Navbar() {
           </Link>
 
           {/* Desktop nav links */}
-          <div className="hidden xl:flex items-center flex-1 justify-center" style={{ gap: '24px' }}>
+          <div className="hidden lg:flex items-center flex-1 justify-center" style={{ gap: '14px' }}>
             {NAV_LINKS.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className="relative font-sans font-medium whitespace-nowrap transition-colors group"
                 style={{
-                  fontSize: '15px',
+                  fontSize: '14px',
                   color: scrolled
                     ? isActive(link.href) ? '#FFFFFF' : 'rgba(255,255,255,0.85)'
                     : isActive(link.href) ? '#8B1E24' : '#333333',
@@ -165,7 +167,7 @@ export function Navbar() {
             {/* Mobile hamburger */}
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="xl:hidden p-2 transition-colors"
+              className="lg:hidden p-2 transition-colors"
               style={{ color: scrolled ? '#FFFFFF' : '#333333' }}
               aria-label="Toggle menu"
             >
@@ -182,7 +184,7 @@ export function Navbar() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.25 }}
-              className="xl:hidden overflow-hidden"
+              className="lg:hidden overflow-hidden"
               style={{
                 borderTop: `1px solid ${scrolled ? 'rgba(255,255,255,0.15)' : '#E8E1D6'}`,
                 borderRadius: '0 0 16px 16px',

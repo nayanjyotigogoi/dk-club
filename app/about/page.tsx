@@ -55,6 +55,8 @@ const FALLBACK_TEAM: TeamMember[] = [
 export default function AboutPage() {
   const [team, setTeam] = useState<TeamMember[]>(FALLBACK_TEAM)
 
+  const designLead = team.find(m => m.role.toLowerCase().includes('design'))
+
   useEffect(() => {
     fetch(`${API_BASE}/members?type=team`)
       .then(r => r.json())
@@ -240,13 +242,13 @@ export default function AboutPage() {
               <div className="flex items-center gap-3">
                 <div
                   className="w-9 h-9 rounded-full flex items-center justify-center font-heading font-bold text-white text-sm flex-shrink-0"
-                  style={{ background: '#1E8B5C' }}
+                  style={{ background: designLead?.color ?? '#1E8B5C' }}
                 >
-                  AG
+                  {designLead?.initials ?? 'DKC'}
                 </div>
                 <div>
-                  <p className="font-sans font-medium text-[#2B2B2B] text-sm">Ankita Gogoi</p>
-                  <p className="font-sans text-[#999] text-xs">Magazine Editor, DKC</p>
+                  <p className="font-sans font-medium text-[#2B2B2B] text-sm">{designLead?.name ?? 'DKC Member'}</p>
+                  <p className="font-sans text-[#999] text-xs">{designLead?.role ?? 'Design Lead'}, DKC</p>
                 </div>
               </div>
             </motion.div>

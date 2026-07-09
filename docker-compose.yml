@@ -7,9 +7,9 @@ services:
       dockerfile: Dockerfile
       args:
         NEXT_PUBLIC_APP_NAME: Dibrugarh Korean Club
-        NEXT_PUBLIC_API_URL: https://dibrugarhkoreanclub.online/api/v1
-        NEXT_PUBLIC_BACKEND_URL: https://dibrugarhkoreanclub.online
-        NEXT_PUBLIC_STORAGE_URL: https://dibrugarhkoreanclub.online/storage
+        NEXT_PUBLIC_API_URL: https://dibrugarhkoreanclub.shop/api/v1
+        NEXT_PUBLIC_BACKEND_URL: https://dibrugarhkoreanclub.shop
+        NEXT_PUBLIC_STORAGE_URL: https://dibrugarhkoreanclub.shop/storage
 
     restart: unless-stopped
 
