@@ -167,7 +167,8 @@
       "PowerShell(New-Item -ItemType Directory -Force \"E:\\\\Demo\\\\vastoqBKD-app\\\\public\\\\storage\\\\listings\")",
       "PowerShell(New-Item -ItemType Directory -Force \"E:\\\\Demo\\\\vastoqBKD-app\\\\public\\\\storage\\\\profiles\")",
       "PowerShell(New-Item -ItemType File -Force \"E:\\\\Demo\\\\vastoqBKD-app\\\\public\\\\storage\\\\listings\\\\.gitkeep\")",
-      "PowerShell(New-Item -ItemType File -Force \"E:\\\\Demo\\\\vastoqBKD-app\\\\public\\\\storage\\\\profiles\\\\.gitkeep\")"
+      "PowerShell(New-Item -ItemType File -Force \"E:\\\\Demo\\\\vastoqBKD-app\\\\public\\\\storage\\\\profiles\\\\.gitkeep\")",
+      "PowerShell(Select-String -Path \"E:\\\\Demo\\\\dibrugarh-korean-club-api\\\\storage\\\\logs\\\\laravel.log\" -Pattern \"^\\\\[20\" | Select-Object -Last 5 | ForEach-Object { $_.Line })"
     ]
   }
 }
