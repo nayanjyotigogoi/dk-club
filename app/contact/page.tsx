@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { MapPin, Mail, Clock, AtSign, PlayCircle, Send } from 'lucide-react'
+import { MapPin, Mail, Clock, AtSign, PlayCircle, Send, Facebook } from 'lucide-react'
 import { PageHero } from '@/components/page-hero'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
@@ -43,7 +43,8 @@ const contactCards = [
 ]
 
 const socials = [
-  { icon: AtSign,     label: 'Instagram', handle: '@dibrugarhkorean.club', href: 'https://instagram.com/dibrugarhkoreanclub' },
+  { icon: AtSign,     label: 'Instagram', handle: '@dibrugarhkorean.club',  href: 'https://instagram.com/dibrugarhkoreanclub' },
+  { icon: Facebook,   label: 'Facebook',  handle: 'Dibrugarh Korean Club', href: 'https://www.facebook.com/p/Dibrugarh-Koreanclub-61592562073245/' },
   { icon: PlayCircle, label: 'YouTube',   handle: 'Dibrugarh Korean Club', href: 'https://youtube.com' },
 ]
 

@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { notFound } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar, MapPin, Clock, ArrowLeft, CheckCircle2, ChevronRight, X } from 'lucide-react'
 import { Navbar } from '@/components/navbar'
@@ -67,7 +66,16 @@ export function EventDetail({ slug }: { slug: string }) {
     return () => clearInterval(id)
   }, [event?.date_iso, event?.status])
 
-  if (notFoundState) notFound()
+  if (notFoundState) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAF6F0] gap-4">
+        <Navbar />
+        <p className="font-korean text-6xl text-[#E8DCCF]">없음</p>
+        <h1 className="font-heading text-2xl font-bold text-[#2B2B2B]">Event not found</h1>
+        <Link href="/events" className="font-sans text-sm text-[#8B1E24] underline underline-offset-2">← Back to Events</Link>
+      </div>
+    )
+  }
   if (!event) return null
 
   const isUpcoming = event.status === 'upcoming'

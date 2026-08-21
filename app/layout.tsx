@@ -33,13 +33,11 @@ export const metadata: Metadata = {
     siteName: 'Dibrugarh Korean Club',
     title: 'Dibrugarh Korean Club — Korean Language & Culture in Assam',
     description: 'A student-led community at Dibrugarh University celebrating Korean language, K-pop, K-drama, and Korean culture in Assam, India.',
-    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Dibrugarh Korean Club' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Dibrugarh Korean Club — Korean Language & Culture in Assam',
     description: 'Student-led Korean language and culture club at Dibrugarh University, Assam, India.',
-    images: ['/og-image.png'],
   },
   robots: {
     index: true,
@@ -105,7 +103,10 @@ const orgJsonLd = {
         'Hangul',
         'Korean Cuisine',
       ],
-      sameAs: [],
+      sameAs: [
+        'https://www.facebook.com/p/Dibrugarh-Koreanclub-61592562073245/',
+        'https://www.instagram.com/dibrugarhkorean.club',
+      ],
     },
     {
       '@type': 'WebSite',

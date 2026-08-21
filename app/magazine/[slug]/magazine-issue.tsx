@@ -398,6 +398,7 @@ export function MagazineIssue({ slug }: { slug: string }) {
   const [issue, setIssue] = useState<ApiMagazine | null>(null)
   const [notFoundState, setNotFoundState] = useState(false)
   const [activeArticle, setActiveArticle] = useState<ApiArticle | null>(null)
+  const [mobileReading, setMobileReading] = useState(false)
 
   useEffect(() => {
     fetch(`${API_BASE}/magazine/${slug}`)
@@ -462,7 +463,7 @@ export function MagazineIssue({ slug }: { slug: string }) {
         </div>
 
         {/* Reader */}
-        <div className="max-w-7xl mx-auto px-6 py-14">
+        <div className="max-w-7xl mx-auto px-4 lg:px-6 py-8 lg:py-14">
           {(issue.articles?.length ?? 0) === 0 ? (
             <div className="flex flex-col items-center justify-center text-center py-20 px-6">
               <span
@@ -521,147 +522,281 @@ export function MagazineIssue({ slug }: { slug: string }) {
               const isKoreanActive = activePair ? activePair[1]?.id === activeArticle?.id : false
 
               return (
-            <div className="flex flex-col lg:flex-row gap-10">
-              {/* Sidebar */}
-              <div className="flex-shrink-0 w-full lg:w-64">
-                <div className="sticky top-24">
-                  <p className="font-sans text-xs font-semibold uppercase tracking-widest text-[#8B1E24] mb-4">In This Issue</p>
-                  <nav className="space-y-2">
-                    {pairs.map(([primary], i) => {
-                      const t = ARTICLE_THEMES[i % ARTICLE_THEMES.length]
-                      const isActive = activePairIdx === i
-                      return (
-                        <button
-                          key={primary.id}
-                          onClick={() => setActiveArticle(primary)}
-                          className="w-full text-left rounded-xl p-3 transition-all"
-                          style={isActive
-                            ? { background: t.accent, boxShadow: `0 4px 16px ${t.accent}40` }
-                            : { background: '#fff', border: `1px solid ${t.accent}22` }}
-                        >
-                          <span
-                            className="inline-block font-sans text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full mb-1"
-                            style={isActive
-                              ? { background: 'rgba(255,255,255,0.18)', color: '#fff' }
-                              : { background: t.tagBg, color: t.tagColor }}
+            <div>
+              {/* ═══════════════════════════════════════════
+                  MOBILE LAYOUT  (hidden on lg+)
+              ═══════════════════════════════════════════ */}
+              <div className="lg:hidden">
+                {!mobileReading ? (
+                  /* ── Article list view ── */
+                  <div>
+                    <p className="font-sans text-xs font-semibold uppercase tracking-widest text-[#8B1E24] mb-4">
+                      In This Issue · {pairs.length} articles
+                    </p>
+                    <div className="space-y-3">
+                      {pairs.map(([primary], i) => {
+                        const t = ARTICLE_THEMES[i % ARTICLE_THEMES.length]
+                        return (
+                          <button
+                            key={primary.id}
+                            onClick={() => { setActiveArticle(primary); setMobileReading(true); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+                            className="w-full text-left rounded-2xl overflow-hidden transition-all active:scale-[0.98]"
+                            style={{ background: t.bg, border: `1px solid ${t.accent}22` }}
                           >
-                            {primary.tag}
-                          </span>
-                          <p className="font-sans text-sm font-medium leading-snug" style={{ color: isActive ? '#fff' : '#2B2B2B' }}>
-                            {primary.title}
-                          </p>
-                          <p className="font-sans text-xs mt-0.5" style={{ color: isActive ? 'rgba(255,255,255,0.65)' : '#999' }}>
-                            by {primary.author}
-                          </p>
-                        </button>
-                      )
-                    })}
-                  </nav>
-                </div>
-              </div>
-
-              {/* Article body */}
-              {activeArticle && activePair && (() => {
-                const theme = ARTICLE_THEMES[activePairIdx % ARTICLE_THEMES.length]
-                const [primary, korean] = activePair
-                const nextPair = pairs[activePairIdx + 1]
-                return (
-                <motion.article
-                  key={activeArticle.id}
-                  className="flex-1 min-w-0"
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.35 }}
-                >
-                  <div className="rounded-2xl overflow-hidden"
-                    style={{ background: theme.bg, border: `1px solid ${theme.accent}22`, position: 'relative' }}>
-
-                    {/* Watermark */}
-                    <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}>
-                      {theme.deco}
-                    </div>
-
-                    {/* Article header band */}
-                    <div className="px-8 lg:px-12 pt-10 pb-8"
-                      style={{ position: 'relative', zIndex: 2, borderBottom: `1px solid ${theme.accent}20`, background: theme.headerBg }}>
-
-                      {/* Tag + language toggle row */}
-                      <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-                        <span
-                          className="inline-block font-sans text-[10px] font-bold uppercase tracking-[3px] px-3 py-1 rounded-full"
-                          style={{ background: theme.tagBg, color: theme.tagColor }}
-                        >
-                          {activeArticle.tag}
-                        </span>
-
-                        {/* Language toggle — only shown when a Korean version exists */}
-                        {korean && (
-                          <div
-                            className="flex items-center rounded-full p-0.5 gap-0.5"
-                            style={{ background: `${theme.accent}18`, border: `1px solid ${theme.accent}25` }}
-                          >
-                            <button
-                              onClick={() => setActiveArticle(primary)}
-                              className="font-sans text-[11px] font-semibold px-3 py-1 rounded-full transition-all"
-                              style={!isKoreanActive
-                                ? { background: theme.accent, color: '#fff' }
-                                : { color: `${theme.accent}99`, background: 'transparent' }}
-                            >
-                              {detectLang(primary.content)}
-                            </button>
-                            <button
-                              onClick={() => setActiveArticle(korean)}
-                              className="font-sans text-[11px] font-semibold px-3 py-1 rounded-full transition-all"
-                              style={isKoreanActive
-                                ? { background: theme.accent, color: '#fff' }
-                                : { color: `${theme.accent}99`, background: 'transparent' }}
-                            >
-                              {detectLang(korean.content)}
-                            </button>
-                          </div>
-                        )}
-                      </div>
-
-                      <h2 className="font-heading font-bold text-[#1A1008] leading-tight mb-3"
-                        style={{ fontSize: 'clamp(20px, 3vw, 28px)' }}>
-                        {activeArticle.title}
-                      </h2>
-                      {activeArticle.excerpt && (
-                        <p className="font-sans italic text-sm leading-relaxed mb-4" style={{ color: `${theme.accent}AA` }}>
-                          {activeArticle.excerpt}
-                        </p>
-                      )}
-                      <p className="font-sans text-xs" style={{ color: `${theme.accent}80` }}>
-                        by <span className="font-semibold" style={{ color: `${theme.accent}CC` }}>{activeArticle.author}</span>
-                        &nbsp;&middot;&nbsp;{issue.title}, {issue.month} {issue.year}
-                      </p>
-                    </div>
-
-                    {/* Article body */}
-                    <div className="px-8 lg:px-12 py-10" style={{ position: 'relative', zIndex: 2 }}>
-                      {renderMarkdown(activeArticle.content, detectLang(activeArticle.content) !== 'English')}
+                            <div className="px-4 pt-4 pb-3" style={{ borderLeft: `3px solid ${t.accent}` }}>
+                              <span
+                                className="inline-block font-sans text-[9px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full mb-2"
+                                style={{ background: t.tagBg, color: t.tagColor }}
+                              >
+                                {primary.tag}
+                              </span>
+                              <p className="font-heading font-bold text-[#1A1008] text-sm leading-snug mb-1">
+                                {primary.title}
+                              </p>
+                              <p className="font-sans text-xs" style={{ color: `${t.accent}80` }}>
+                                by {primary.author}
+                              </p>
+                              {primary.excerpt && (
+                                <p className="font-sans text-xs leading-relaxed mt-2 line-clamp-2" style={{ color: `${t.accent}90` }}>
+                                  {primary.excerpt}
+                                </p>
+                              )}
+                            </div>
+                            <div className="flex items-center justify-between px-4 py-2" style={{ background: `${t.accent}10`, borderTop: `1px solid ${t.accent}15` }}>
+                              <span className="font-sans text-[10px] font-semibold" style={{ color: t.accent }}>Read article</span>
+                              <ChevronRight className="w-3.5 h-3.5" style={{ color: t.accent }} />
+                            </div>
+                          </button>
+                        )
+                      })}
                     </div>
                   </div>
-
-                  {nextPair && (() => {
-                    const nextTheme = ARTICLE_THEMES[(activePairIdx + 1) % ARTICLE_THEMES.length]
+                ) : (
+                  /* ── Article reading view ── */
+                  activeArticle && activePair && (() => {
+                    const theme = ARTICLE_THEMES[activePairIdx % ARTICLE_THEMES.length]
+                    const [primary, korean] = activePair
+                    const nextPair = pairs[activePairIdx + 1]
                     return (
-                      <button
-                        onClick={() => setActiveArticle(nextPair[0])}
-                        className="mt-6 w-full rounded-2xl p-5 flex items-center justify-between text-left transition-all hover:shadow-md"
-                        style={{ background: nextTheme.headerBg, border: `1px solid ${nextTheme.accent}22` }}
-                      >
-                        <div>
-                          <p className="font-sans text-xs mb-0.5" style={{ color: `${nextTheme.accent}80` }}>Next in this issue</p>
-                          <p className="font-heading font-semibold text-[#2B2B2B] text-sm">{nextPair[0].title}</p>
+                      <div>
+                        {/* Back + progress bar */}
+                        <div className="flex items-center justify-between mb-4">
+                          <button
+                            onClick={() => { setMobileReading(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+                            className="inline-flex items-center gap-1.5 font-sans text-sm font-semibold"
+                            style={{ color: '#8B1E24' }}
+                          >
+                            <ArrowLeft className="w-4 h-4" /> All Articles
+                          </button>
+                          <span className="font-sans text-xs text-[#999]">
+                            {activePairIdx + 1} / {pairs.length}
+                          </span>
                         </div>
-                        <ChevronRight className="w-5 h-5 flex-shrink-0" style={{ color: nextTheme.accent }} />
-                      </button>
+
+                        {/* Article card */}
+                        <motion.div
+                          key={activeArticle.id}
+                          className="rounded-2xl overflow-hidden"
+                          style={{ background: theme.bg, border: `1px solid ${theme.accent}22`, position: 'relative' }}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.25 }}
+                        >
+                          <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}>{theme.deco}</div>
+
+                          {/* Header */}
+                          <div className="px-5 pt-6 pb-5" style={{ position: 'relative', zIndex: 2, borderBottom: `1px solid ${theme.accent}20`, background: theme.headerBg }}>
+                            <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
+                              <span className="inline-block font-sans text-[9px] font-bold uppercase tracking-widest px-2.5 py-1 rounded-full"
+                                style={{ background: theme.tagBg, color: theme.tagColor }}>
+                                {activeArticle.tag}
+                              </span>
+                              {korean && (
+                                <div className="flex items-center rounded-full p-0.5 gap-0.5"
+                                  style={{ background: `${theme.accent}18`, border: `1px solid ${theme.accent}25` }}>
+                                  <button onClick={() => setActiveArticle(primary)}
+                                    className="font-sans text-[11px] font-semibold px-3 py-1 rounded-full transition-all"
+                                    style={!isKoreanActive ? { background: theme.accent, color: '#fff' } : { color: `${theme.accent}99`, background: 'transparent' }}>
+                                    {detectLang(primary.content)}
+                                  </button>
+                                  <button onClick={() => setActiveArticle(korean)}
+                                    className="font-sans text-[11px] font-semibold px-3 py-1 rounded-full transition-all"
+                                    style={isKoreanActive ? { background: theme.accent, color: '#fff' } : { color: `${theme.accent}99`, background: 'transparent' }}>
+                                    {detectLang(korean.content)}
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                            <h2 className="font-heading font-bold text-[#1A1008] leading-tight mb-2" style={{ fontSize: 'clamp(18px, 5vw, 24px)' }}>
+                              {activeArticle.title}
+                            </h2>
+                            {activeArticle.excerpt && (
+                              <p className="font-sans italic text-xs leading-relaxed mb-3" style={{ color: `${theme.accent}AA` }}>
+                                {activeArticle.excerpt}
+                              </p>
+                            )}
+                            <p className="font-sans text-xs" style={{ color: `${theme.accent}80` }}>
+                              by <span className="font-semibold" style={{ color: `${theme.accent}CC` }}>{activeArticle.author}</span>
+                            </p>
+                          </div>
+
+                          {/* Body */}
+                          <div className="px-5 py-6" style={{ position: 'relative', zIndex: 2 }}>
+                            {renderMarkdown(activeArticle.content, detectLang(activeArticle.content) !== 'English')}
+                          </div>
+                        </motion.div>
+
+                        {/* Next article */}
+                        {nextPair && (() => {
+                          const nt = ARTICLE_THEMES[(activePairIdx + 1) % ARTICLE_THEMES.length]
+                          return (
+                            <button
+                              onClick={() => { setActiveArticle(nextPair[0]); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+                              className="mt-4 w-full rounded-2xl p-4 flex items-center justify-between text-left transition-all active:scale-[0.98]"
+                              style={{ background: nt.headerBg, border: `1px solid ${nt.accent}22` }}
+                            >
+                              <div>
+                                <p className="font-sans text-[10px] mb-0.5" style={{ color: `${nt.accent}70` }}>Next article</p>
+                                <p className="font-heading font-semibold text-[#2B2B2B] text-sm">{nextPair[0].title}</p>
+                                <p className="font-sans text-xs mt-0.5" style={{ color: `${nt.accent}80` }}>by {nextPair[0].author}</p>
+                              </div>
+                              <ChevronRight className="w-5 h-5 flex-shrink-0 ml-3" style={{ color: nt.accent }} />
+                            </button>
+                          )
+                        })()}
+
+                        {/* Back to list */}
+                        <button
+                          onClick={() => { setMobileReading(false); window.scrollTo({ top: 0, behavior: 'smooth' }) }}
+                          className="mt-3 w-full rounded-2xl py-3.5 font-sans text-sm font-semibold text-center transition-all"
+                          style={{ background: '#fff', border: '1px solid #E8DCCF', color: '#8B1E24' }}
+                        >
+                          ← Back to All Articles
+                        </button>
+                      </div>
                     )
-                  })()}
-                </motion.article>
-                )
-              })()}
+                  })()
+                )}
+              </div>
+
+              {/* ═══════════════════════════════════════════
+                  DESKTOP LAYOUT  (hidden on mobile)
+              ═══════════════════════════════════════════ */}
+              <div className="hidden lg:flex gap-10">
+                {/* Sidebar */}
+                <div className="flex-shrink-0 w-64">
+                  <div className="sticky top-24">
+                    <p className="font-sans text-xs font-semibold uppercase tracking-widest text-[#8B1E24] mb-4">In This Issue</p>
+                    <nav className="space-y-2">
+                      {pairs.map(([primary], i) => {
+                        const t = ARTICLE_THEMES[i % ARTICLE_THEMES.length]
+                        const isActive = activePairIdx === i
+                        return (
+                          <button
+                            key={primary.id}
+                            onClick={() => setActiveArticle(primary)}
+                            className="w-full text-left rounded-xl p-3 transition-all"
+                            style={isActive
+                              ? { background: t.accent, boxShadow: `0 4px 16px ${t.accent}40` }
+                              : { background: '#fff', border: `1px solid ${t.accent}22` }}
+                          >
+                            <span className="inline-block font-sans text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded-full mb-1"
+                              style={isActive ? { background: 'rgba(255,255,255,0.18)', color: '#fff' } : { background: t.tagBg, color: t.tagColor }}>
+                              {primary.tag}
+                            </span>
+                            <p className="font-sans text-sm font-medium leading-snug" style={{ color: isActive ? '#fff' : '#2B2B2B' }}>
+                              {primary.title}
+                            </p>
+                            <p className="font-sans text-xs mt-0.5" style={{ color: isActive ? 'rgba(255,255,255,0.65)' : '#999' }}>
+                              by {primary.author}
+                            </p>
+                          </button>
+                        )
+                      })}
+                    </nav>
+                  </div>
+                </div>
+
+                {/* Article body */}
+                {activeArticle && activePair && (() => {
+                  const theme = ARTICLE_THEMES[activePairIdx % ARTICLE_THEMES.length]
+                  const [primary, korean] = activePair
+                  const nextPair = pairs[activePairIdx + 1]
+                  return (
+                    <motion.article
+                      key={activeArticle.id}
+                      className="flex-1 min-w-0"
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.35 }}
+                    >
+                      <div className="rounded-2xl overflow-hidden"
+                        style={{ background: theme.bg, border: `1px solid ${theme.accent}22`, position: 'relative' }}>
+                        <div style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none' }}>{theme.deco}</div>
+
+                        <div className="px-12 pt-10 pb-8"
+                          style={{ position: 'relative', zIndex: 2, borderBottom: `1px solid ${theme.accent}20`, background: theme.headerBg }}>
+                          <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+                            <span className="inline-block font-sans text-[10px] font-bold uppercase tracking-[3px] px-3 py-1 rounded-full"
+                              style={{ background: theme.tagBg, color: theme.tagColor }}>
+                              {activeArticle.tag}
+                            </span>
+                            {korean && (
+                              <div className="flex items-center rounded-full p-0.5 gap-0.5"
+                                style={{ background: `${theme.accent}18`, border: `1px solid ${theme.accent}25` }}>
+                                <button onClick={() => setActiveArticle(primary)}
+                                  className="font-sans text-[11px] font-semibold px-3 py-1 rounded-full transition-all"
+                                  style={!isKoreanActive ? { background: theme.accent, color: '#fff' } : { color: `${theme.accent}99`, background: 'transparent' }}>
+                                  {detectLang(primary.content)}
+                                </button>
+                                <button onClick={() => setActiveArticle(korean)}
+                                  className="font-sans text-[11px] font-semibold px-3 py-1 rounded-full transition-all"
+                                  style={isKoreanActive ? { background: theme.accent, color: '#fff' } : { color: `${theme.accent}99`, background: 'transparent' }}>
+                                  {detectLang(korean.content)}
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                          <h2 className="font-heading font-bold text-[#1A1008] leading-tight mb-3"
+                            style={{ fontSize: 'clamp(20px, 3vw, 28px)' }}>
+                            {activeArticle.title}
+                          </h2>
+                          {activeArticle.excerpt && (
+                            <p className="font-sans italic text-sm leading-relaxed mb-4" style={{ color: `${theme.accent}AA` }}>
+                              {activeArticle.excerpt}
+                            </p>
+                          )}
+                          <p className="font-sans text-xs" style={{ color: `${theme.accent}80` }}>
+                            by <span className="font-semibold" style={{ color: `${theme.accent}CC` }}>{activeArticle.author}</span>
+                            &nbsp;&middot;&nbsp;{issue.title}, {issue.month} {issue.year}
+                          </p>
+                        </div>
+
+                        <div className="px-12 py-10" style={{ position: 'relative', zIndex: 2 }}>
+                          {renderMarkdown(activeArticle.content, detectLang(activeArticle.content) !== 'English')}
+                        </div>
+                      </div>
+
+                      {nextPair && (() => {
+                        const nextTheme = ARTICLE_THEMES[(activePairIdx + 1) % ARTICLE_THEMES.length]
+                        return (
+                          <button
+                            onClick={() => setActiveArticle(nextPair[0])}
+                            className="mt-6 w-full rounded-2xl p-5 flex items-center justify-between text-left transition-all hover:shadow-md"
+                            style={{ background: nextTheme.headerBg, border: `1px solid ${nextTheme.accent}22` }}
+                          >
+                            <div>
+                              <p className="font-sans text-xs mb-0.5" style={{ color: `${nextTheme.accent}80` }}>Next in this issue</p>
+                              <p className="font-heading font-semibold text-[#2B2B2B] text-sm">{nextPair[0].title}</p>
+                            </div>
+                            <ChevronRight className="w-5 h-5 flex-shrink-0" style={{ color: nextTheme.accent }} />
+                          </button>
+                        )
+                      })()}
+                    </motion.article>
+                  )
+                })()}
+              </div>
             </div>
               )
             })()

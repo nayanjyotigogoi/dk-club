@@ -69,8 +69,8 @@ export default function MembersPage() {
     const result = q
       ? members.filter(m =>
           m.full_name.toLowerCase().includes(q) ||
-          m.institution.toLowerCase().includes(q) ||
-          m.department.toLowerCase().includes(q)
+          (m.institution ?? '').toLowerCase().includes(q) ||
+          (m.department ?? '').toLowerCase().includes(q)
         )
       : members
     return result
