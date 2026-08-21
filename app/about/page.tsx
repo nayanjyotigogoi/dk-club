@@ -53,7 +53,8 @@ const FALLBACK_TEAM: TeamMember[] = [
 ]
 
 export default function AboutPage() {
-  const [team, setTeam] = useState<TeamMember[]>(FALLBACK_TEAM)
+  const [team, setTeam]           = useState<TeamMember[]>(FALLBACK_TEAM)
+  const [membersCount, setMembers] = useState<string>('30+')
 
   const designLead = team.find(m => m.role.toLowerCase().includes('design'))
 
@@ -61,6 +62,11 @@ export default function AboutPage() {
     fetch(`${API_BASE}/members?type=team`)
       .then(r => r.json())
       .then((data: TeamMember[]) => { if (data?.length) setTeam(data) })
+      .catch(() => {})
+
+    fetch(`${API_BASE}/settings`)
+      .then(r => r.json())
+      .then((s: Record<string, string>) => { if (s?.members_count) setMembers(s.members_count) })
       .catch(() => {})
   }, [])
 
@@ -91,7 +97,7 @@ export default function AboutPage() {
                 Dibrugarh Korean Club (DKC) was born from a simple realisation: thousands of students across Northeast India were discovering Korean culture through drama, music and film but there was nowhere to celebrate it together.
               </motion.p>
               <motion.p variants={fade} className="font-sans text-[#555] leading-relaxed mb-4 text-base">
-                Founded in 2025 at Dibrugarh University by a handful of Korean culture enthusiasts, DKC has grown into one of the most vibrant cultural organisations in the region with over 550 members, a quarterly magazine, annual festivals, language workshops, and a growing library of Korean resources.
+                Founded in 2025 at Dibrugarh University by a handful of Korean culture enthusiasts, DKC has grown into one of the most vibrant cultural organisations in the region with over {membersCount.replace('+', '')} members, a quarterly magazine, annual festivals, language workshops, and a growing library of Korean resources.
               </motion.p>
               <motion.p variants={fade} className="font-sans text-[#555] leading-relaxed text-base">
                 We believe that language is a doorway to understanding. When you learn Korean even a little, you start to see Korea differently. The drama lines hit harder. The food tastes better. The music makes more sense. That transformation is what DKC is built on.

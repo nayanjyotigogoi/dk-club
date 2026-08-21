@@ -70,6 +70,7 @@ export interface ApiMagazine {
   description: string
   is_featured: boolean
   page_count: number
+  sort_order: number | null
   articles: ApiArticle[]
 }
 

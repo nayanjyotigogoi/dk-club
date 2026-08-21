@@ -104,7 +104,7 @@ export function HeroSection() {
             className="flex flex-row gap-4 flex-wrap"
           >
             <Link
-              href="/community"
+              href="/join"
               className="inline-flex items-center gap-2 font-sans font-semibold text-white transition-all hover:shadow-lg active:scale-95"
               style={{
                 background: '#8B1E24',

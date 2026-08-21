@@ -16,6 +16,7 @@ const NAV_LINKS = [
   { href: '/events',   label: 'Events',   icon: Calendar   },
   { href: '/culture',  label: 'Culture',  icon: Globe      },
   { href: '/magazine', label: 'Magazine', icon: BookOpen   },
+  { href: '/members',  label: 'Members',  icon: Users      },
   { href: '/gallery',  label: 'Gallery',  icon: ImageIcon  },
   { href: '/goodies',  label: 'Goodies',  icon: ShoppingBag},
   // learn route hidden — uncomment to restore
