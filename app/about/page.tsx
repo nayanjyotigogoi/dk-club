@@ -111,7 +111,7 @@ export default function AboutPage() {
               transition={{ duration: 0.6 }}
             >
               <div className="rounded-2xl p-8" style={{ background: '#8B1E24' }}>
-                <p className="font-heading font-bold text-white text-5xl mb-1">20+</p>
+                <p className="font-heading font-bold text-white text-5xl mb-1">{membersCount}</p>
                 <p className="font-sans text-white/60 text-sm mb-8">Active Members</p>
                 <div className="space-y-5">
                   {[
