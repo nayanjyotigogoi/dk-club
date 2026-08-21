@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation'
 import { useState, useEffect, useRef } from 'react'
 import {
   Menu, X, Sun, Users,
-  Home, Info, Calendar, Globe, BookOpen, Image as ImageIcon, ShoppingBag, Mail, GraduationCap,
+  Home, Info, Calendar, Globe, BookOpen, Image as ImageIcon, ShoppingBag, Mail,
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -18,7 +18,7 @@ const NAV_LINKS = [
   { href: '/magazine', label: 'Magazine', icon: BookOpen   },
   { href: '/gallery',  label: 'Gallery',  icon: ImageIcon  },
   { href: '/goodies',  label: 'Goodies',  icon: ShoppingBag},
-  { href: '/learn',    label: 'Learn',    icon: GraduationCap },
+  // learn route hidden — uncomment to restore
   { href: '/contact',  label: 'Contact',  icon: Mail       },
 ]
 

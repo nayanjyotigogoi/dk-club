@@ -60,30 +60,30 @@ function MagazineCard() {
         style={{ background: 'rgba(255,255,255,0.08)' }}
       >
         <div className="font-korean text-6xl font-bold mb-4" style={{ color: 'rgba(255,255,255,0.15)' }}>
-          한류
+          인연
         </div>
         <div className="w-16 h-0.5 mb-5" style={{ background: 'rgba(255,255,255,0.2)' }} />
         <p className="font-heading text-lg font-bold text-white text-center leading-snug mb-2">
-          Our First Issue
+          인연 — Vol. I
         </p>
         <p className="font-sans text-xs text-white/50 text-center leading-relaxed">
-          Coming soon — stay tuned
+          Hallyu, identity, and culture — told from Northeast India
         </p>
         <span
           className="font-sans text-[10px] font-semibold px-3 py-1 rounded-full mt-4"
           style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.15)' }}
         >
-          Not yet published
+          Upcoming · Aug 25
         </span>
       </div>
 
       {/* Bottom CTA */}
       <div className="px-6 py-5">
         <p className="font-sans text-xs text-white/50 mb-3 leading-relaxed">
-          Our magazine will feature student-written stories, cultural essays and language notes. Check back soon.
+          Our first issue features student-written stories, cultural essays and Hallyu perspectives from Dibrugarh.
         </p>
         <Link
-          href="/magazine"
+          href="/magazine/in-yeon-vol-1"
           className="flex items-center justify-center gap-2 w-full rounded-full font-sans font-semibold text-sm transition-all hover:opacity-90 active:scale-95"
           style={{
             background: 'rgba(255,255,255,0.15)',

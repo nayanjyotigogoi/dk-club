@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  User, Mail, Phone, BookOpen, GraduationCap, Heart,
+  User, Mail, Phone, BookOpen, Heart,
   Sparkles, CheckCircle2, ArrowRight, ChevronDown,
   Building2, Briefcase, Globe2,
 } from 'lucide-react'
@@ -40,7 +40,7 @@ const STATUS_OPTIONS = [
     value: 'du_student',
     label: 'Student',
     sublabel: 'Dibrugarh University',
-    icon: GraduationCap,
+    icon: BookOpen,
   },
   {
     value: 'other_student',

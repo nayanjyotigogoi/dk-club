@@ -25,9 +25,10 @@ export default function MagazinePage() {
       .catch(() => {})
   }, [])
 
-  const featured = magazines.find(m => m.is_featured) ?? magazines[0]
+  const sorted   = [...magazines].sort((a, b) => (b.sort_order ?? 0) - (a.sort_order ?? 0))
+  const featured = sorted.find(m => m.is_featured) ?? sorted[0]
   const years    = [...new Set(magazines.map(m => m.year))].sort((a, b) => b - a)
-  const archive  = magazines.filter(m => m.slug !== featured?.slug)
+  const archive  = sorted.filter(m => m.slug !== featured?.slug)
   const visible  = activeYear === 'all' ? archive : archive.filter(m => m.year === activeYear)
 
   return (
@@ -75,7 +76,7 @@ export default function MagazinePage() {
               <div className="h-px flex-1" style={{ background: '#D4C4B0' }} />
             </div>
 
-            <Link href={`/magazine/${featured.slug}`} style={{ pointerEvents: (featured.articles?.length ?? 0) === 0 ? 'none' : 'auto' }}>
+            <Link href={`/magazine/${featured.slug}`}>
               <motion.div
                 className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-0 rounded-2xl overflow-hidden cursor-pointer"
                 style={{ boxShadow: '0 8px 48px rgba(0,0,0,0.12)' }}
@@ -163,27 +164,18 @@ export default function MagazinePage() {
                   </div>
 
                   <div className="flex items-center gap-4">
-                    {(featured.articles?.length ?? 0) === 0 ? (
-                      <span
-                        className="inline-flex items-center gap-2 font-sans font-bold text-sm px-7 py-3 rounded-full"
-                        style={{ background: '#FAF3ED', color: '#8B1E24', border: '1px solid #E8DCCF' }}
-                      >
-                        Coming Soon — Stay Tuned
+                    <span
+                      className="inline-flex items-center gap-2 font-sans font-bold text-sm px-7 py-3 rounded-full transition-all hover:opacity-90"
+                      style={{ background: '#8B1E24', color: '#fff' }}
+                    >
+                      Read Issue <ArrowRight className="w-4 h-4" />
+                    </span>
+                    {featured.page_count ? (
+                      <span className="flex items-center gap-1.5 font-sans text-xs text-[#bbb]">
+                        <FileText className="w-3.5 h-3.5" />
+                        {featured.page_count} pages
                       </span>
-                    ) : (
-                      <>
-                        <span
-                          className="inline-flex items-center gap-2 font-sans font-bold text-sm px-7 py-3 rounded-full transition-all hover:opacity-90"
-                          style={{ background: '#8B1E24', color: '#fff' }}
-                        >
-                          Read Issue <ArrowRight className="w-4 h-4" />
-                        </span>
-                        <span className="flex items-center gap-1.5 font-sans text-xs text-[#bbb]">
-                          <FileText className="w-3.5 h-3.5" />
-                          {featured.page_count} pages
-                        </span>
-                      </>
-                    )}
+                    ) : null}
                   </div>
                 </div>
               </motion.div>

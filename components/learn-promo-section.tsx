@@ -2,13 +2,13 @@
 
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { GraduationCap, BookOpen, MessageCircle, Globe2, ArrowRight, Sparkles } from 'lucide-react'
+import { BookOpen, MessageCircle, Globe2, ArrowRight, Sparkles } from 'lucide-react'
 
 const features = [
   { icon: BookOpen,       title: 'Structured Lessons',    korean: '체계적인 수업', body: 'From Hangul basics to everyday conversations — 30 lessons across 3 levels.' },
   { icon: MessageCircle,  title: 'Real Conversations',    korean: '실제 대화',    body: 'Practice with authentic dialogues used in Korean daily life.' },
   { icon: Globe2,         title: 'Assamese & English',    korean: '아삼어 + 영어', body: 'Every word and grammar point explained in both Assamese and English.' },
-  { icon: GraduationCap,  title: 'Quizzes & Practice',   korean: '퀴즈 연습',    body: 'Test yourself with topic-based quizzes after every lesson.' },
+  { icon: BookOpen,       title: 'Quizzes & Practice',   korean: '퀴즈 연습',    body: 'Test yourself with topic-based quizzes after every lesson.' },
 ]
 
 function FadeUp({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {

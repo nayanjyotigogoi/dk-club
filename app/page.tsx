@@ -34,7 +34,7 @@ export default function Home() {
       <StatsBar />
       <KoreanPhraseWall />
       <HomeDynamicSections />
-      <LearnPromoSection />
+      {/* <LearnPromoSection /> */}{/* hidden — not ready for users */}
       <CommunitySection />
       <Footer />
     </>

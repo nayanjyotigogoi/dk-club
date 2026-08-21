@@ -3,6 +3,12 @@ const nextConfig = {
   // TypeScript errors are checked separately via tsc — do not silence them in prod builds
   // typescript: { ignoreBuildErrors: true },  // disabled
 
+  experimental: {
+    // Only bundle icons that are actually imported — prevents the full lucide-react
+    // barrel (which includes GraduationCap) from being instantiated by Turbopack
+    optimizePackageImports: ['lucide-react'],
+  },
+
   images: {
     // Enable Next.js image optimisation (WebP/AVIF conversion, responsive sizes)
     formats: ['image/avif', 'image/webp'],
@@ -55,13 +61,7 @@ const nextConfig = {
           },
         ],
       },
-      // Long-lived cache for static assets Next.js fingerprints
-      {
-        source: '/_next/static/(.*)',
-        headers: [
-          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
-        ],
-      },
+      // Next.js manages Cache-Control for /_next/static/ automatically — no override needed
     ]
   },
 }
