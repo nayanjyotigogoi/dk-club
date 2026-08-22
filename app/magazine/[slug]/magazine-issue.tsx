@@ -507,7 +507,7 @@ export function MagazineIssue({ slug }: { slug: string }) {
               for (let i = 0; i < issue.articles.length; ) {
                 const cur  = issue.articles[i]
                 const next = issue.articles[i + 1]
-                if (next && detectLang(next.content) !== detectLang(cur.content)) {
+                if (next && next.author === cur.author && detectLang(next.content) !== detectLang(cur.content)) {
                   pairs.push([cur, next])
                   i += 2
                 } else {
