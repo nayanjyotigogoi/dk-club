@@ -14,6 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: `${title} | Dibrugarh Korean Club`,
       description: `Join us for ${title} — a Korean cultural event by Dibrugarh Korean Club.`,
       url: `https://dibrugarhkoreanclub.com/events/${slug}`,
+      images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Dibrugarh Korean Club' }],
     },
   }
 }

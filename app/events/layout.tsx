@@ -14,6 +14,7 @@ export const metadata: Metadata = {
     title: 'Korean Cultural Events — Dibrugarh Korean Club',
     description: 'Hangul Day, Chuseok, K-pop nights, Korean film screenings and language bootcamps in Assam, India.',
     url: 'https://dibrugarhkoreanclub.com/events',
+    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Dibrugarh Korean Club' }],
   },
 }
 

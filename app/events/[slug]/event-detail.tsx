@@ -76,7 +76,38 @@ export function EventDetail({ slug }: { slug: string }) {
       </div>
     )
   }
-  if (!event) return null
+
+  if (!event) {
+    return (
+      <div className="min-h-screen bg-[#FAF6F0]">
+        <Navbar />
+        {/* Hero skeleton */}
+        <div className="bg-[#E8DCCF] animate-pulse" style={{ minHeight: 280 }}>
+          <div className="max-w-7xl mx-auto px-6 py-14 pt-20">
+            <div className="h-4 w-24 bg-[#D4C4B0] rounded mb-6" />
+            <div className="h-3 w-48 bg-[#D4C4B0] rounded mb-6" />
+            <div className="h-8 w-2/3 bg-[#D4C4B0] rounded mb-3" />
+            <div className="h-4 w-1/3 bg-[#D4C4B0] rounded" />
+          </div>
+        </div>
+        {/* Content skeleton */}
+        <div className="max-w-7xl mx-auto px-6 py-14">
+          <div className="flex flex-col lg:flex-row gap-10">
+            <div className="flex-1 space-y-4">
+              <div className="h-6 w-40 bg-[#E8DCCF] rounded animate-pulse" />
+              <div className="h-4 bg-[#E8DCCF] rounded animate-pulse" />
+              <div className="h-4 bg-[#E8DCCF] rounded animate-pulse w-5/6" />
+              <div className="h-4 bg-[#E8DCCF] rounded animate-pulse w-4/6" />
+            </div>
+            <div className="flex-shrink-0 w-full lg:w-80 space-y-4">
+              <div className="h-40 bg-[#E8DCCF] rounded-2xl animate-pulse" />
+              <div className="h-14 bg-[#E8DCCF] rounded-2xl animate-pulse" />
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   const isUpcoming = event.status === 'upcoming'
 
