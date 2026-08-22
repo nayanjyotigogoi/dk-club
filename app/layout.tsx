@@ -33,11 +33,13 @@ export const metadata: Metadata = {
     siteName: 'Dibrugarh Korean Club',
     title: 'Dibrugarh Korean Club — Korean Language & Culture in Assam',
     description: 'A student-led community at Dibrugarh University celebrating Korean language, K-pop, K-drama, and Korean culture in Assam, India.',
+    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Dibrugarh Korean Club' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Dibrugarh Korean Club — Korean Language & Culture in Assam',
     description: 'Student-led Korean language and culture club at Dibrugarh University, Assam, India.',
+    images: ['/opengraph-image'],
   },
   robots: {
     index: true,
@@ -80,7 +82,7 @@ const orgJsonLd = {
         width: 512,
         height: 512,
       },
-      image: 'https://dibrugarhkoreanclub.com/og-image.png',
+      image: 'https://dibrugarhkoreanclub.com/opengraph-image',
       description:
         'Student-led Korean language and culture club at Dibrugarh University, Assam, India. Offers structured Korean lessons, cultural events, K-pop and K-drama community activities.',
       foundingDate: '2023',

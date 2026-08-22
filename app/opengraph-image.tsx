@@ -1,11 +1,16 @@
 import { ImageResponse } from 'next/og'
+import { readFileSync } from 'fs'
+import { join } from 'path'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 export const alt = 'Dibrugarh Korean Club'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
 export default function OgImage() {
+  const logoBuffer = readFileSync(join(process.cwd(), 'public', 'logo.png'))
+  const logoSrc = `data:image/png;base64,${logoBuffer.toString('base64')}`
+
   return new ImageResponse(
     (
       <div
@@ -21,21 +26,7 @@ export default function OgImage() {
           fontFamily: 'serif',
         }}
       >
-        {/* Korean watermark */}
-        <div
-          style={{
-            position: 'absolute',
-            right: 60,
-            top: 40,
-            fontSize: 220,
-            color: 'rgba(255,255,255,0.04)',
-            lineHeight: 1,
-          }}
-        >
-          한국
-        </div>
-
-        {/* Red accent bar */}
+        {/* Top accent bar */}
         <div
           style={{
             position: 'absolute',
@@ -47,10 +38,24 @@ export default function OgImage() {
           }}
         />
 
+        {/* Korean watermark */}
+        <div
+          style={{
+            position: 'absolute',
+            right: 50,
+            top: 30,
+            fontSize: 220,
+            color: 'rgba(255,255,255,0.04)',
+            lineHeight: 1,
+          }}
+        >
+          한국
+        </div>
+
         {/* Logo */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://dibrugarhkoreanclub.com/logo.png"
+          src={logoSrc}
           width={110}
           height={110}
           alt=""
@@ -96,7 +101,7 @@ export default function OgImage() {
           Korean Language &amp; Culture · Dibrugarh University · Assam, India
         </div>
 
-        {/* Bottom bar */}
+        {/* Bottom accent bar */}
         <div
           style={{
             position: 'absolute',
