@@ -2,245 +2,286 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import {
-  BookOpen, BookMarked, Layers, MessageSquare, Zap, RefreshCw, Search,
-} from 'lucide-react'
-import { motion } from 'framer-motion'
-import { cn } from '@/lib/utils'
-import { SECTION_IDENTITY, type SectionKey } from '@/lib/learning/constants'
+import { BookMarked, ChevronDown, X, GraduationCap } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import { CHAPTERS } from '@/lib/learning/chapters-data'
 
-// ─── Icon map — keeps the constants file free of React imports ────────────────
+// ─── Desktop sidebar ──────────────────────────────────────────────────────────
 
-const SECTION_ICONS: Record<SectionKey, React.ElementType> = {
-  lessons:       BookOpen,
-  dictionary:    BookMarked,
-  grammar:       Layers,
-  conversations: MessageSquare,
-  practice:      Zap,
-  revision:      RefreshCw,
-}
-
-const SECTIONS = Object.entries(SECTION_IDENTITY) as [SectionKey, typeof SECTION_IDENTITY[SectionKey]][]
-
-// ─── Search nav item (standalone — not in SECTION_IDENTITY) ──────────────────
-
-function SearchNavItem({ collapsed, pathname }: { collapsed: boolean; pathname: string }) {
-  const isActive = pathname === '/learn/search'
-  return (
-    <Link
-      href="/learn/search"
-      title={collapsed ? 'Search' : undefined}
-      className={cn(
-        'relative flex items-center gap-3 rounded-xl transition-colors group',
-        collapsed ? 'justify-center' : ''
-      )}
-      style={{
-        padding: collapsed ? '10px' : '10px 12px',
-        background: isActive ? '#FEF3F0' : 'transparent',
-        color: isActive ? '#8B1E24' : '#6B6B6B',
-      }}
-      aria-current={isActive ? 'page' : undefined}
-    >
-      {isActive && (
-        <motion.div
-          layoutId="learning-nav-indicator"
-          className="absolute left-0 top-2 bottom-2 rounded-full"
-          style={{ width: '3px', background: '#8B1E24' }}
-          transition={{ type: 'spring', stiffness: 400, damping: 35 }}
-        />
-      )}
-      <Search size={20} className="flex-shrink-0" style={{ color: isActive ? '#8B1E24' : '#9CA3AF' }} />
-      {!collapsed && (
-        <span className="font-sans font-medium" style={{ fontSize: '14px', color: isActive ? '#8B1E24' : '#4B5563' }}>
-          Search
-        </span>
-      )}
-      {!isActive && (
-        <span
-          className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
-          style={{ background: '#FEF3F0' }}
-          aria-hidden
-        />
-      )}
-    </Link>
-  )
-}
-
-// ─── Sidebar (desktop) ────────────────────────────────────────────────────────
-
-function SidebarNav({ collapsed }: { collapsed: boolean }) {
+function DesktopSidebar() {
   const pathname = usePathname()
 
   return (
-    <nav
-      aria-label="Learning navigation"
-      className="flex flex-col gap-1 h-full"
-      style={{ padding: collapsed ? '12px 8px' : '12px 12px' }}
+    <aside
+      className="hidden md:flex flex-col flex-shrink-0"
+      style={{
+        width: '220px',
+        background: '#FDFAF6',
+        borderRight: '1px solid #E8DCCF',
+        position: 'sticky',
+        top: '84px',
+        height: 'calc(100vh - 84px)',
+        overflowY: 'auto',
+      }}
     >
-      {/* Section heading */}
-      {!collapsed && (
-        <div style={{ padding: '4px 12px 8px', marginBottom: '4px' }}>
-          <span
-            className="font-heading font-semibold tracking-widest uppercase"
-            style={{ fontSize: '10px', color: 'rgba(139,30,36,0.5)', letterSpacing: '.1em' }}
-          >
-            Learning
-          </span>
+      {/* Brand strip */}
+      <div style={{ padding: '18px 16px 14px', borderBottom: '1px solid #EDE7DC', display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ width: 32, height: 32, borderRadius: '8px', background: '#8B1E24', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          <GraduationCap size={16} color="#fff" />
         </div>
-      )}
+        <div>
+          <div style={{ fontFamily: 'var(--font-heading, serif)', fontWeight: 700, fontSize: '13px', color: '#1A1008', lineHeight: 1.2 }}>Korean</div>
+          <div style={{ fontFamily: 'var(--font-sans, sans-serif)', fontSize: '10px', color: '#B8A898', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Learning Path</div>
+        </div>
+      </div>
 
-      <SearchNavItem collapsed={collapsed} pathname={pathname} />
+      <nav style={{ flex: 1, padding: '10px 8px', display: 'flex', flexDirection: 'column', gap: '1px' }}>
+        {/* Chapters label */}
+        <div style={{ padding: '8px 10px 6px', fontFamily: 'var(--font-sans, sans-serif)', fontSize: '10px', fontWeight: 700, color: '#B8A898', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+          Chapters
+        </div>
 
-      {SECTIONS.map(([key, section]) => {
-        const Icon = SECTION_ICONS[key]
-        const isActive = pathname === section.href || pathname.startsWith(section.href + '/')
-
-        return (
-          <Link
-            key={key}
-            href={section.href}
-            title={collapsed ? section.label : undefined}
-            className={cn(
-              'relative flex items-center gap-3 rounded-xl transition-colors group',
-              collapsed ? 'justify-center' : ''
-            )}
-            style={{
-              padding: collapsed ? '10px' : '10px 12px',
-              background: isActive ? section.tint : 'transparent',
-              color: isActive ? section.accent : '#6B6B6B',
-            }}
-            aria-current={isActive ? 'page' : undefined}
-          >
-            {/* Active indicator bar */}
-            {isActive && (
-              <motion.div
-                layoutId="learning-nav-indicator"
-                className="absolute left-0 top-2 bottom-2 rounded-full"
-                style={{ width: '3px', background: section.accent }}
-                transition={{ type: 'spring', stiffness: 400, damping: 35 }}
-              />
-            )}
-
-            <Icon
-              className="flex-shrink-0 transition-colors"
-              size={20}
-              style={{ color: isActive ? section.accent : '#9CA3AF' }}
-            />
-
-            {!collapsed && (
-              <span
-                className="font-sans font-medium transition-colors"
-                style={{ fontSize: '14px', color: isActive ? section.accent : '#4B5563' }}
-              >
-                {section.label}
+        {CHAPTERS.map(ch => {
+          const active = pathname === `/learn/chapters/${ch.slug}`
+          return (
+            <Link
+              key={ch.slug}
+              href={`/learn/chapters/${ch.slug}`}
+              aria-current={active ? 'page' : undefined}
+              className="sidebar-link"
+              style={{
+                display: 'flex', alignItems: 'center', gap: '10px',
+                padding: '8px 10px', borderRadius: '10px', textDecoration: 'none',
+                background: active ? ch.tint : 'transparent',
+                border: `1.5px solid ${active ? ch.accent + '50' : 'transparent'}`,
+                transition: 'background 0.15s, border-color 0.15s',
+              }}
+              onMouseEnter={e => { if (!active) { e.currentTarget.style.background = '#F0E9DF'; e.currentTarget.style.borderColor = '#DDD4C4' } }}
+              onMouseLeave={e => { if (!active) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.borderColor = 'transparent' } }}
+            >
+              <span style={{
+                width: 26, height: 26, borderRadius: '7px', flexShrink: 0,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: active ? ch.accent : '#EDE7DC',
+                color: active ? '#fff' : '#6B5C3E',
+                fontSize: '12px', fontWeight: 700,
+                fontFamily: 'var(--font-heading, serif)',
+                transition: 'background 0.15s',
+              }}>
+                {ch.number}
               </span>
-            )}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontFamily: 'var(--font-sans, sans-serif)', fontSize: '13px', fontWeight: active ? 700 : 500, color: active ? ch.accent : '#2A1F14', lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {ch.title}
+                </div>
+                <div style={{ fontFamily: 'var(--font-korean, serif)', fontSize: '11px', color: active ? ch.accent : '#A89880', lineHeight: 1.2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                  {ch.titleKo}
+                </div>
+              </div>
+              {active && <div style={{ width: 6, height: 6, borderRadius: '50%', background: ch.accent, flexShrink: 0 }} />}
+            </Link>
+          )
+        })}
 
-            {/* Hover tint for non-active items */}
-            {!isActive && (
-              <span
-                className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity"
-                style={{ background: section.tint }}
-                aria-hidden
-              />
-            )}
-          </Link>
-        )
-      })}
-    </nav>
+        {/* Divider + Reference */}
+        <div style={{ height: '1px', background: '#EDE7DC', margin: '8px 6px' }} />
+        <div style={{ padding: '4px 10px 6px', fontFamily: 'var(--font-sans, sans-serif)', fontSize: '10px', fontWeight: 700, color: '#B8A898', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+          Reference
+        </div>
+        <Link
+          href="/learn/dictionary"
+          style={{
+            display: 'flex', alignItems: 'center', gap: '10px',
+            padding: '8px 10px', borderRadius: '10px', textDecoration: 'none',
+            background: pathname.startsWith('/learn/dictionary') ? '#F4F0E8' : 'transparent',
+            border: `1.5px solid ${pathname.startsWith('/learn/dictionary') ? '#DDD4B860' : 'transparent'}`,
+            transition: 'background 0.15s',
+          }}
+          onMouseEnter={e => { if (!pathname.startsWith('/learn/dictionary')) e.currentTarget.style.background = '#F0E9DF' }}
+          onMouseLeave={e => { if (!pathname.startsWith('/learn/dictionary')) e.currentTarget.style.background = 'transparent' }}
+        >
+          <span style={{ width: 26, height: 26, borderRadius: '7px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: pathname.startsWith('/learn/dictionary') ? '#6B5C3E' : '#EDE7DC', flexShrink: 0 }}>
+            <BookMarked size={13} color={pathname.startsWith('/learn/dictionary') ? '#fff' : '#6B5C3E'} />
+          </span>
+          <span style={{ fontFamily: 'var(--font-sans, sans-serif)', fontSize: '13px', fontWeight: pathname.startsWith('/learn/dictionary') ? 700 : 500, color: pathname.startsWith('/learn/dictionary') ? '#6B5C3E' : '#2A1F14' }}>
+            Dictionary
+          </span>
+        </Link>
+      </nav>
+    </aside>
   )
 }
 
-// ─── Bottom tab bar (mobile) ──────────────────────────────────────────────────
+// ─── Mobile top nav + slide-down drawer ──────────────────────────────────────
 
-function MobileTabBar() {
+function MobileNav() {
   const pathname = usePathname()
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => { setOpen(false) }, [pathname])
+
+  const activeChapter = CHAPTERS.find(ch => pathname === `/learn/chapters/${ch.slug}`)
+  const isDictionary = pathname.startsWith('/learn/dictionary')
+
+  const barLabel = activeChapter
+    ? `Ch ${activeChapter.number} · ${activeChapter.title}`
+    : isDictionary ? 'Dictionary'
+    : 'Korean Learning'
+
+  const barColor = activeChapter?.accent ?? '#8B1E24'
 
   return (
-    <nav
-      aria-label="Learning navigation"
-      className="fixed bottom-0 left-0 right-0 z-40 flex"
-      style={{
-        background: '#FFFFFF',
-        borderTop: '0.5px solid #E8DCCF',
-        paddingBottom: 'env(safe-area-inset-bottom)',
-      }}
-    >
-      {/* Search tab */}
-      {(() => {
-        const isActive = pathname === '/learn/search'
-        return (
-          <Link
-            href="/learn/search"
-            className="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors"
-            style={{ padding: '8px 4px', minHeight: '52px' }}
-            aria-current={isActive ? 'page' : undefined}
-          >
-            <Search size={20} style={{ color: isActive ? '#8B1E24' : '#9CA3AF' }} />
-            <span className="font-sans" style={{ fontSize: '9px', fontWeight: isActive ? 600 : 400, color: isActive ? '#8B1E24' : '#9CA3AF', lineHeight: 1 }}>
-              Search
-            </span>
-          </Link>
-        )
-      })()}
+    <div className="md:hidden" style={{ position: 'relative', zIndex: 30 }}>
+      {/* ── Sticky top bar ── */}
+      <div style={{
+        position: 'sticky', top: '84px', zIndex: 30,
+        background: '#FDFAF6', borderBottom: '1px solid #E8DCCF',
+        display: 'flex', alignItems: 'center', gap: '10px',
+        padding: '0 14px', height: '50px',
+      }}>
+        {/* Progress pills */}
+        <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+          {CHAPTERS.map(ch => {
+            const active = pathname === `/learn/chapters/${ch.slug}`
+            return (
+              <Link key={ch.slug} href={`/learn/chapters/${ch.slug}`} style={{ textDecoration: 'none', display: 'block' }}>
+                <div style={{
+                  height: 6, width: active ? 18 : 6, borderRadius: '3px',
+                  background: active ? ch.accent : '#DDD4C4',
+                  transition: 'width 0.25s, background 0.25s',
+                }} />
+              </Link>
+            )
+          })}
+        </div>
 
-      {SECTIONS.map(([key, section]) => {
-        const Icon = SECTION_ICONS[key]
-        const isActive = pathname === section.href || pathname.startsWith(section.href + '/')
+        {/* Current page name */}
+        <div style={{
+          flex: 1, fontFamily: 'var(--font-sans, sans-serif)', fontSize: '13px',
+          fontWeight: 600, color: barColor,
+          overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+        }}>
+          {barLabel}
+        </div>
 
-        return (
+        {/* Toggle button */}
+        <button
+          onClick={() => setOpen(v => !v)}
+          aria-expanded={open}
+          aria-label={open ? 'Close chapters menu' : 'Open chapters menu'}
+          style={{
+            display: 'flex', alignItems: 'center', gap: '5px',
+            padding: '5px 10px', borderRadius: '8px',
+            border: '1px solid #E8DCCF',
+            background: open ? '#F0E9DF' : '#FFFFFF',
+            cursor: 'pointer', flexShrink: 0,
+            fontFamily: 'var(--font-sans, sans-serif)', fontSize: '12px',
+            fontWeight: 600, color: '#2A1F14',
+            transition: 'background 0.15s',
+          }}
+        >
+          {open ? <X size={13} /> : <ChevronDown size={13} />}
+          <span>{open ? 'Close' : 'Chapters'}</span>
+        </button>
+      </div>
+
+      {/* ── Slide-down chapter drawer ── */}
+      <div
+        aria-hidden={!open}
+        style={{
+          position: 'absolute', top: '50px', left: 0, right: 0, zIndex: 29,
+          background: '#FDFAF6',
+          borderBottom: open ? '1px solid #E8DCCF' : 'none',
+          boxShadow: open ? '0 8px 24px rgba(0,0,0,0.10)' : 'none',
+          maxHeight: open ? '500px' : '0',
+          overflow: 'hidden',
+          transition: 'max-height 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s',
+        }}
+      >
+        <div style={{ padding: '10px 12px 14px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
+          <div style={{ padding: '2px 10px 8px', fontFamily: 'var(--font-sans, sans-serif)', fontSize: '10px', fontWeight: 700, color: '#B8A898', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            Chapters
+          </div>
+
+          {CHAPTERS.map(ch => {
+            const active = pathname === `/learn/chapters/${ch.slug}`
+            return (
+              <Link
+                key={ch.slug}
+                href={`/learn/chapters/${ch.slug}`}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '12px',
+                  padding: '10px 12px', borderRadius: '10px', textDecoration: 'none',
+                  background: active ? ch.tint : 'transparent',
+                  border: `1.5px solid ${active ? ch.accent + '50' : 'transparent'}`,
+                }}
+              >
+                <span style={{
+                  width: 30, height: 30, borderRadius: '8px', flexShrink: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  background: active ? ch.accent : '#EDE7DC',
+                  color: active ? '#fff' : '#6B5C3E',
+                  fontSize: '13px', fontWeight: 700, fontFamily: 'var(--font-heading, serif)',
+                }}>
+                  {ch.number}
+                </span>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontFamily: 'var(--font-sans, sans-serif)', fontSize: '14px', fontWeight: active ? 700 : 500, color: active ? ch.accent : '#1A1008', lineHeight: 1.3 }}>
+                    {ch.title}
+                  </div>
+                  <div style={{ fontFamily: 'var(--font-korean, serif)', fontSize: '12px', color: active ? ch.accent : '#A89880', lineHeight: 1.2 }}>
+                    {ch.titleKo}
+                  </div>
+                </div>
+                {active && <div style={{ width: 7, height: 7, borderRadius: '50%', background: ch.accent, flexShrink: 0 }} />}
+              </Link>
+            )
+          })}
+
+          <div style={{ height: '1px', background: '#EDE7DC', margin: '6px 4px' }} />
+
           <Link
-            key={key}
-            href={section.href}
-            className="flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors"
+            href="/learn/dictionary"
             style={{
-              padding: '8px 4px',
-              color: isActive ? section.accent : '#9CA3AF',
-              minHeight: '52px',
+              display: 'flex', alignItems: 'center', gap: '12px',
+              padding: '10px 12px', borderRadius: '10px', textDecoration: 'none',
+              background: isDictionary ? '#F4F0E8' : 'transparent',
             }}
-            aria-current={isActive ? 'page' : undefined}
           >
-            <Icon size={20} />
-            <span
-              className="font-sans"
-              style={{
-                fontSize: '9px',
-                fontWeight: isActive ? 600 : 400,
-                color: isActive ? section.accent : '#9CA3AF',
-                lineHeight: 1,
-              }}
-            >
-              {section.label}
+            <span style={{ width: 30, height: 30, borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: isDictionary ? '#6B5C3E' : '#EDE7DC', flexShrink: 0 }}>
+              <BookMarked size={14} color={isDictionary ? '#fff' : '#6B5C3E'} />
+            </span>
+            <span style={{ fontFamily: 'var(--font-sans, sans-serif)', fontSize: '14px', fontWeight: isDictionary ? 700 : 500, color: isDictionary ? '#6B5C3E' : '#1A1008' }}>
+              Dictionary
             </span>
           </Link>
-        )
-      })}
-    </nav>
+        </div>
+      </div>
+
+      {/* Tap-outside backdrop */}
+      {open && (
+        <div
+          onClick={() => setOpen(false)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 20,
+            background: 'rgba(26,16,8,0.15)',
+          }}
+        />
+      )}
+    </div>
   )
 }
 
-// ─── Shell wrapper — renders the appropriate nav for the viewport ─────────────
+// ─── Named exports (used by the learn layout) ─────────────────────────────────
 
+export { DesktopSidebar, MobileNav }
+
+// Legacy default export kept for any existing imports
 export function LearningNav() {
   return (
     <>
-      {/* Desktop sidebar — hidden below md, icon-only below xl */}
-      <div
-        className="hidden md:flex flex-col flex-shrink-0"
-        style={{
-          width: '240px',
-          minHeight: '100%',
-          borderRight: '0.5px solid #E8DCCF',
-          background: '#FDFAF7',
-        }}
-      >
-        <SidebarNav collapsed={false} />
-      </div>
-
-      {/* Mobile tab bar — visible below md only */}
-      <div className="md:hidden">
-        <MobileTabBar />
-      </div>
+      <DesktopSidebar />
+      <MobileNav />
     </>
   )
 }

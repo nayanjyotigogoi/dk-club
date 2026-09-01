@@ -21,29 +21,27 @@ export function Footer() {
   }
 
   const quickLinks = [
-    { id: 'quick-home', label: 'Home', href: '/' },
-    { id: 'quick-about', label: 'About Us', href: '/about' },
-    { id: 'quick-events', label: 'Events', href: '/events' },
-    { id: 'quick-korean', label: 'Learn Korean', href: '/culture' },
-    { id: 'quick-gallery', label: 'Gallery', href: '/gallery' },
-    { id: 'quick-resources', label: 'Resources', href: '/resources' },
-    { id: 'quick-contact', label: 'Contact Us', href: '/contact' },
+    { id: 'quick-home',      label: 'Home',         href: '/' },
+    { id: 'quick-about',     label: 'About Us',     href: '/about' },
+    { id: 'quick-events',    label: 'Events',       href: '/events' },
+    { id: 'quick-magazine',  label: 'Magazine',     href: '/magazine' },
+    { id: 'quick-gallery',   label: 'Gallery',      href: '/gallery' },
+    { id: 'quick-members',   label: 'Members',      href: '/members' },
+    { id: 'quick-contact',   label: 'Contact Us',   href: '/contact' },
   ]
 
   const memberArea = [
-    { id: 'member-register', label: 'Join DKC', href: '/join' },
-    { id: 'member-courses', label: 'Courses', href: '/courses' },
-    { id: 'member-support', label: 'Help & Support', href: '/contact' },
+    { id: 'member-register', label: 'Join DKC',       href: '/join' },
+    { id: 'member-courses',  label: 'Courses',         href: '/courses' },
+    { id: 'member-support',  label: 'Help & Support',  href: '/contact' },
   ]
 
   const resources = [
-    { id: 'res-materials', label: 'Study Materials',    href: '/resources/study-materials' },
-    { id: 'res-vocab',     label: 'Vocabulary Lists',   href: '/resources/vocabulary' },
-    { id: 'res-grammar',   label: 'Grammar Guide',      href: '/resources/grammar' },
-    { id: 'res-culture',   label: 'Korean Culture',     href: '/resources/korean-culture' },
-    { id: 'res-practice',  label: 'Practice Exercises', href: '/resources/practice' },
-    { id: 'res-books',     label: 'Recommended Books',  href: '/resources/books' },
-    { id: 'res-links',     label: 'Useful Links',       href: '/resources/links' },
+    { id: 'res-learn',     label: 'Learn Korean',    href: '/learn' },
+    { id: 'res-chapters',  label: 'Chapter Lessons', href: '/learn/chapters' },
+    { id: 'res-goodies',   label: 'Goodies',         href: '/goodies' },
+    { id: 'res-community', label: 'Community',       href: '/community' },
+    { id: 'res-resources', label: 'Resources',       href: '/resources' },
   ]
 
   const socialLinks = [

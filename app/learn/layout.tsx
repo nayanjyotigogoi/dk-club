@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
-import { LearningNav } from '@/components/learning/learning-nav'
+import { DesktopSidebar, MobileNav } from '@/components/learning/learning-nav'
 
 export const metadata: Metadata = {
   title: {
@@ -29,21 +29,28 @@ export default function LearnLayout({ children }: { children: React.ReactNode })
     <>
       <Navbar />
 
-      {/* Top padding compensates for the fixed Navbar (~84px) */}
-      <div className="flex min-h-screen" style={{ paddingTop: '84px' }}>
-        <LearningNav />
+      <div style={{ paddingTop: '84px', minHeight: '100vh', background: '#FAF6F0', display: 'flex' }}>
 
-        {/* Main content area */}
-        <main
-          className="flex-1 min-w-0"
-          style={{
-            background: '#FAF6F0',
-            // On mobile, add bottom padding so content isn't hidden behind tab bar
-            paddingBottom: 'max(env(safe-area-inset-bottom), 64px)',
-          }}
-        >
-          {children}
-        </main>
+        {/* Desktop sidebar — flex child, 220px wide, hidden on mobile */}
+        <DesktopSidebar />
+
+        {/* Right column — flex child, takes remaining width */}
+        <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
+
+          {/* Mobile sticky nav — stacks above main on small screens, hidden on md+ */}
+          <MobileNav />
+
+          {/* Page content */}
+          <main
+            className="flex-1"
+            style={{
+              background: '#FAF6F0',
+              padding: 'clamp(20px, 4vw, 36px) clamp(16px, 4vw, 36px)',
+            }}
+          >
+            {children}
+          </main>
+        </div>
       </div>
 
       <Footer />

@@ -30,7 +30,7 @@ export default function MagazinePage() {
   const years    = [...new Set(magazines.map(m => m.year))].sort((a, b) => b - a)
   const archive  = sorted.filter(m => m.slug !== featured?.slug)
   const visible  = activeYear === 'all' ? archive : archive.filter(m => m.year === activeYear)
-
+ 
   return (
     <>
       <Navbar />
