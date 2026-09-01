@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import {
@@ -47,34 +48,28 @@ function MagazineCard() {
           </span>
         </div>
         <span
-          className="font-sans text-[10px] font-semibold px-2.5 py-1 rounded-full"
-          style={{ background: 'rgba(255,255,255,0.15)', color: '#fff' }}
+          className="font-sans text-[10px] font-semibold px-2.5 py-1 rounded-full flex items-center gap-1"
+          style={{ background: 'rgba(255,255,255,0.18)', color: '#fff' }}
         >
-          Latest Issue
+          <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#4ade80', display: 'inline-block' }} />
+          Now Live
         </span>
       </div>
 
-      {/* Issue illustration area */}
-      <div
-        className="mx-6 rounded-xl flex-1 flex flex-col items-center justify-center px-6 py-8"
-        style={{ background: 'rgba(255,255,255,0.08)' }}
-      >
-        <div className="font-korean text-6xl font-bold mb-4" style={{ color: 'rgba(255,255,255,0.15)' }}>
-          인연
+      {/* Cover image */}
+      <div className="mx-6 rounded-xl flex-1 overflow-hidden relative" style={{ minHeight: '220px' }}>
+        <Image
+          src="/magazine-cover-vol1.jpg"
+          alt="인연 — Vol. I Magazine Cover"
+          fill
+          className="object-cover object-top"
+          sizes="(max-width: 1024px) 100vw, 50vw"
+        />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(139,30,36,0.7) 0%, transparent 50%)' }} />
+        <div className="absolute bottom-4 left-4 right-4">
+          <p className="font-heading text-base font-bold text-white leading-snug mb-1">인연 — Vol. I</p>
+          <p className="font-sans text-xs text-white/70 leading-relaxed">Hallyu, identity, and culture — told from Northeast India</p>
         </div>
-        <div className="w-16 h-0.5 mb-5" style={{ background: 'rgba(255,255,255,0.2)' }} />
-        <p className="font-heading text-lg font-bold text-white text-center leading-snug mb-2">
-          인연 — Vol. I
-        </p>
-        <p className="font-sans text-xs text-white/50 text-center leading-relaxed">
-          Hallyu, identity, and culture — told from Northeast India
-        </p>
-        <span
-          className="font-sans text-[10px] font-semibold px-3 py-1 rounded-full mt-4"
-          style={{ background: 'rgba(255,255,255,0.12)', color: 'rgba(255,255,255,0.6)', border: '1px solid rgba(255,255,255,0.15)' }}
-        >
-          Upcoming · Aug 25
-        </span>
       </div>
 
       {/* Bottom CTA */}
