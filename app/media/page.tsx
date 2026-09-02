@@ -162,8 +162,8 @@ export default function MediaPage() {
     <>
       <Navbar />
       <PageHero
-        eyebrow="Korean Media"
-        title="한국 미디어 추천"
+        koreanTitle="한국 미디어"
+        title="Korean Media Picks"
         subtitle="Dramas, films, music, and books curated by Dibrugarh Korean Club — everything you need to fall in love with Korean culture."
       />
 
