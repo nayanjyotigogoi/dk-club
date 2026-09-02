@@ -132,6 +132,7 @@ export interface ApiMediaPick {
   description: string
   tag: string
   streaming_platform: string
+  streaming_url: string | null
   is_active: boolean
   sort_order: number
 }

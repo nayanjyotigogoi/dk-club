@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { API_BASE, type ApiPhrase } from '@/lib/api'
+import { getDailyItems } from '@/lib/daily'
 
 const FALLBACK_PHRASES: ApiPhrase[] = [
   { id: 1, korean: '안녕하세요', english: 'Hello', romanized: 'Annyeonghaseyo', sort_order: 1, is_active: true },
@@ -12,8 +13,6 @@ const FALLBACK_PHRASES: ApiPhrase[] = [
   { id: 5, korean: '사랑해요', english: 'I love you', romanized: 'Saranghaeyo', sort_order: 5, is_active: true },
   { id: 6, korean: '수고했어요', english: 'Good job!', romanized: 'Sugohaesseoyo', sort_order: 6, is_active: true },
   { id: 7, korean: '반갑습니다', english: 'Nice to meet you', romanized: 'Bangapseumnida', sort_order: 7, is_active: true },
-  { id: 8, korean: '맛있어요', english: "It's delicious", romanized: 'Massisseoyo', sort_order: 8, is_active: true },
-  { id: 9, korean: '괜찮아요', english: "It's okay", romanized: 'Gwaenchanayo', sort_order: 9, is_active: true },
 ]
 
 function FlowerIcon() {
@@ -39,7 +38,9 @@ export function KoreanPhraseWall() {
   useEffect(() => {
     fetch(`${API_BASE}/phrases`)
       .then(r => r.json())
-      .then((data: ApiPhrase[]) => { if (data?.length) setPhrases(data) })
+      .then((data: ApiPhrase[]) => {
+        if (data?.length) setPhrases(getDailyItems(data, 7))
+      })
       .catch(() => {})
   }, [])
 

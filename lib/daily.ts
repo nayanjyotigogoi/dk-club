@@ -13,6 +13,12 @@ export function getDailyItem<T>(items: T[], date = new Date()): T | null {
   return items[getDayOfYear(date) % items.length]
 }
 
+export function getDailyItems<T>(items: T[], count: number, date = new Date()): T[] {
+  if (!items.length) return []
+  const start = getDayOfYear(date) % items.length
+  return Array.from({ length: count }, (_, i) => items[(start + i) % items.length])
+}
+
 export function getPreviousItem<T>(items: T[], date = new Date()): T | null {
   if (!items.length) return null
   const prev = new Date(date)

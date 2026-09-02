@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Volume2, Lightbulb, Play, Flame, ChevronLeft, Sparkles } from 'lucide-react'
-import { API_BASE, type ApiPhrase, type ApiFunFact, type ApiMediaPick } from '@/lib/api'
+import { Volume2, Flame, ChevronLeft, Sparkles, BookOpen } from 'lucide-react'
+import { API_BASE, type ApiPhrase, type ApiFunFact } from '@/lib/api'
 import { getDailyItem, getPreviousItem, formatDailyDate, recordVisitAndGetStreak } from '@/lib/daily'
 
 // ── Web Speech API helper ────────────────────────────────────────────────────
@@ -14,19 +14,6 @@ function speak(text: string) {
   u.lang = 'ko-KR'
   u.rate = 0.85
   window.speechSynthesis.speak(u)
-}
-
-// ── Media type config ────────────────────────────────────────────────────────
-const MEDIA_CONFIG: Record<string, { label: string; color: string; tint: string }> = {
-  drama:   { label: 'K-Drama',  color: '#8B1E24', tint: '#FEF3F0' },
-  movie:   { label: 'K-Movie',  color: '#2D5F7A', tint: '#EBF3F8' },
-  music:   { label: 'K-Pop',    color: '#6B3A7A', tint: '#F5EEF8' },
-  book:    { label: 'Book',     color: '#3B6B3A', tint: '#EEF5EE' },
-  podcast: { label: 'Podcast',  color: '#6B5C3E', tint: '#F4F0E8' },
-}
-
-function getMediaConfig(type: string) {
-  return MEDIA_CONFIG[type] ?? { label: type, color: '#8B1E24', tint: '#FEF3F0' }
 }
 
 // ── Phrase card ───────────────────────────────────────────────────────────────
@@ -118,8 +105,8 @@ function PhraseCard({ phrase, prev, streak }: {
   )
 }
 
-// ── Fun Fact card ─────────────────────────────────────────────────────────────
-function FunFactCard({ fact }: { fact: ApiFunFact | null }) {
+// ── DKC Spotlight card ────────────────────────────────────────────────────────
+function SpotlightCard({ spotlight }: { spotlight: ApiFunFact | null }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -127,123 +114,45 @@ function FunFactCard({ fact }: { fact: ApiFunFact | null }) {
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay: 0.08 }}
       className="flex flex-col h-full rounded-2xl overflow-hidden"
-      style={{ background: '#fff', border: '1.5px solid #B5D4E8' }}
+      style={{ background: '#fff', border: '1.5px solid #C8DFC8' }}
     >
       {/* Header */}
-      <div className="px-5 pt-5 pb-3 flex items-center gap-2" style={{ borderBottom: '1px solid #EBF3F8' }}>
-        <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: '#EBF3F8' }}>
-          <Lightbulb size={13} color="#2D5F7A" />
+      <div className="px-5 pt-5 pb-3 flex items-center justify-between" style={{ borderBottom: '1px solid #EEF5EE' }}>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: '#EEF5EE' }}>
+            <BookOpen size={13} color="#3B6B3A" />
+          </div>
+          <span className="font-sans text-[10px] font-bold uppercase tracking-widest" style={{ color: '#3B6B3A' }}>
+            DKC Daily
+          </span>
         </div>
-        <span className="font-sans text-[10px] font-bold uppercase tracking-widest" style={{ color: '#2D5F7A' }}>
-          Did You Know?
+        {spotlight?.korean_word && (
+          <span
+            className="font-heading font-bold px-2 py-0.5 rounded-full"
+            style={{ fontSize: '13px', background: '#EEF5EE', color: '#3B6B3A', fontFamily: "'Malgun Gothic', serif" }}
+          >
+            {spotlight.korean_word}
+          </span>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 flex flex-col justify-center px-5 py-5">
+        {spotlight ? (
+          <p className="font-sans leading-relaxed" style={{ fontSize: '14px', color: '#334155', lineHeight: 1.75 }}>
+            {spotlight.fact}
+          </p>
+        ) : (
+          <p className="font-sans text-sm" style={{ color: '#9CA3AF' }}>Loading today's tip…</p>
+        )}
+      </div>
+
+      {/* Footer */}
+      <div className="px-5 py-3" style={{ borderTop: '1px solid #EEF5EE', background: '#F7FBF7' }}>
+        <span className="font-sans text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#6A9A69' }}>
+          Dibrugarh Korean Club · {spotlight?.romanized ?? 'Daily Tip'}
         </span>
       </div>
-
-      {/* Content */}
-      <div className="flex-1 flex flex-col justify-center px-5 py-5">
-        {fact ? (
-          <>
-            {fact.korean_word && (
-              <div className="mb-3 inline-flex">
-                <span
-                  className="font-heading font-bold px-3 py-1 rounded-full"
-                  style={{ fontSize: '18px', background: '#EBF3F8', color: '#2D5F7A', fontFamily: "'Malgun Gothic', serif" }}
-                >
-                  {fact.korean_word}
-                  {fact.romanized && (
-                    <span className="font-sans italic ml-2" style={{ fontSize: '12px', color: '#7AADCA', fontWeight: 400 }}>
-                      {fact.romanized}
-                    </span>
-                  )}
-                </span>
-              </div>
-            )}
-            <p className="font-sans leading-relaxed" style={{ fontSize: '14px', color: '#334155', lineHeight: 1.7 }}>
-              {fact.fact}
-            </p>
-          </>
-        ) : (
-          <p className="font-sans text-sm" style={{ color: '#9CA3AF' }}>Loading today's fact…</p>
-        )}
-      </div>
-
-      {/* Type badge */}
-      {fact && (
-        <div className="px-5 py-3" style={{ borderTop: '1px solid #EBF3F8', background: '#F7FBFD' }}>
-          <span className="font-sans text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#7AADCA' }}>
-            {fact.type === 'fun_fact' ? '✨ Fun Fact' : '🤔 Did You Know'}
-          </span>
-        </div>
-      )}
-    </motion.div>
-  )
-}
-
-// ── Media Pick card ───────────────────────────────────────────────────────────
-function MediaPickCard({ pick }: { pick: ApiMediaPick | null }) {
-  const cfg = pick ? getMediaConfig(pick.type) : { label: '', color: '#8B1E24', tint: '#FEF3F0' }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.4, delay: 0.16 }}
-      className="flex flex-col h-full rounded-2xl overflow-hidden"
-      style={{ background: '#fff', border: '1.5px solid #D9B5E8' }}
-    >
-      {/* Header */}
-      <div className="px-5 pt-5 pb-3 flex items-center justify-between" style={{ borderBottom: '1px solid #F5EEF8' }}>
-        <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: '#F5EEF8' }}>
-            <Play size={11} color="#6B3A7A" style={{ marginLeft: '1px' }} />
-          </div>
-          <span className="font-sans text-[10px] font-bold uppercase tracking-widest" style={{ color: '#6B3A7A' }}>
-            This Week's Pick
-          </span>
-        </div>
-        {pick && (
-          <span className="font-sans text-[10px] font-bold px-2 py-0.5 rounded-full" style={{ background: cfg.tint, color: cfg.color, border: `1px solid ${cfg.color}33` }}>
-            {cfg.label}
-          </span>
-        )}
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 flex flex-col justify-center px-5 py-5">
-        {pick ? (
-          <>
-            {pick.korean_title && (
-              <p className="font-heading font-bold mb-1" style={{ fontSize: '18px', color: cfg.color, fontFamily: "'Malgun Gothic', serif" }}>
-                {pick.korean_title}
-              </p>
-            )}
-            <p className="font-heading font-semibold mb-2" style={{ fontSize: '15px', color: '#1A1008' }}>
-              {pick.title}
-            </p>
-            <p className="font-sans leading-relaxed" style={{ fontSize: '13px', color: '#7A6A5A', lineHeight: 1.65 }}>
-              {pick.description}
-            </p>
-            {pick.tag && (
-              <div className="mt-3">
-                <span className="font-sans text-[11px] font-semibold px-2.5 py-1 rounded-full" style={{ background: cfg.tint, color: cfg.color }}>
-                  {pick.tag}
-                </span>
-              </div>
-            )}
-          </>
-        ) : (
-          <p className="font-sans text-sm" style={{ color: '#9CA3AF' }}>Loading this week's pick…</p>
-        )}
-      </div>
-
-      {pick?.streaming_platform && (
-        <div className="px-5 py-3" style={{ borderTop: '1px solid #F5EEF8', background: '#FAF6FD' }}>
-          <span className="font-sans text-[11px]" style={{ color: '#A881C4' }}>
-            Available on <span style={{ fontWeight: 600 }}>{pick.streaming_platform}</span>
-          </span>
-        </div>
-      )}
     </motion.div>
   )
 }
@@ -252,8 +161,7 @@ function MediaPickCard({ pick }: { pick: ApiMediaPick | null }) {
 export function DailyDiscoverySection() {
   const [phrase, setPhrase] = useState<ApiPhrase | null>(null)
   const [prevPhrase, setPrevPhrase] = useState<ApiPhrase | null>(null)
-  const [fact, setFact] = useState<ApiFunFact | null>(null)
-  const [pick, setPick] = useState<ApiMediaPick | null>(null)
+  const [spotlight, setSpotlight] = useState<ApiFunFact | null>(null)
   const [streak, setStreak] = useState(0)
   const [dateLabel, setDateLabel] = useState('')
 
@@ -261,24 +169,40 @@ export function DailyDiscoverySection() {
     setDateLabel(formatDailyDate())
     setStreak(recordVisitAndGetStreak())
 
-    fetch(`${API_BASE}/phrases`)
+    // Phrase of the Day: check for a featured (pinned) phrase first, else daily rotation
+    fetch(`${API_BASE}/phrases/featured`)
       .then(r => r.json())
-      .then((data: ApiPhrase[]) => {
-        if (data?.length) {
-          setPhrase(getDailyItem(data))
-          setPrevPhrase(getPreviousItem(data))
+      .then((featured: ApiPhrase | null) => {
+        if (featured?.id) {
+          setPhrase(featured)
+        } else {
+          fetch(`${API_BASE}/phrases`)
+            .then(r => r.json())
+            .then((data: ApiPhrase[]) => {
+              if (data?.length) {
+                setPhrase(getDailyItem(data))
+                setPrevPhrase(getPreviousItem(data))
+              }
+            })
+            .catch(() => {})
         }
       })
-      .catch(() => {})
+      .catch(() => {
+        fetch(`${API_BASE}/phrases`)
+          .then(r => r.json())
+          .then((data: ApiPhrase[]) => {
+            if (data?.length) {
+              setPhrase(getDailyItem(data))
+              setPrevPhrase(getPreviousItem(data))
+            }
+          })
+          .catch(() => {})
+      })
 
-    fetch(`${API_BASE}/fun-facts`)
+    // DKC Spotlight: fetch club_tip type from fun-facts, rotate daily
+    fetch(`${API_BASE}/fun-facts?type=club_tip`)
       .then(r => r.json())
-      .then((data: ApiFunFact[]) => { if (data?.length) setFact(getDailyItem(data)) })
-      .catch(() => {})
-
-    fetch(`${API_BASE}/media-picks`)
-      .then(r => r.json())
-      .then((data: ApiMediaPick[]) => { if (data?.length) setPick(getDailyItem(data)) })
+      .then((data: ApiFunFact[]) => { if (data?.length) setSpotlight(getDailyItem(data)) })
       .catch(() => {})
   }, [])
 
@@ -312,29 +236,15 @@ export function DailyDiscoverySection() {
           )}
         </motion.div>
 
-        {/* 3-column grid */}
+        {/* 2-card grid */}
         <style>{`
-          .daily-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-          @media (max-width: 900px) { .daily-grid { grid-template-columns: 1fr 1fr; } }
-          @media (max-width: 580px) { .daily-grid { grid-template-columns: 1fr; } }
+          .daily-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+          @media (max-width: 700px) { .daily-grid { grid-template-columns: 1fr; } }
         `}</style>
         <div className="daily-grid">
           <PhraseCard phrase={phrase} prev={prevPhrase} streak={streak} />
-          <FunFactCard fact={fact} />
-          <MediaPickCard pick={pick} />
+          <SpotlightCard spotlight={spotlight} />
         </div>
-
-        {/* Footer note */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-          className="font-sans text-center mt-6"
-          style={{ fontSize: '12px', color: '#C4A89A' }}
-        >
-          ✨ Content rotates daily — come back tomorrow for something new
-        </motion.p>
       </div>
     </section>
   )

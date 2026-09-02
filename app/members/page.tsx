@@ -4,7 +4,8 @@ import { useState, useEffect, useMemo } from 'react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { API_BASE } from '@/lib/api'
-import { Search, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Search, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 
 const PAGE_SIZE = 12
@@ -233,6 +234,39 @@ export default function MembersPage() {
           </p>
         )}
       </main>
+
+      {/* ── Join CTA ── */}
+      {!loading && (
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mx-auto max-w-6xl w-full px-6 pb-14"
+        >
+          <div
+            className="rounded-2xl px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left"
+            style={{ background: '#1A0A05', border: '1.5px solid #3A2010' }}
+          >
+            <div>
+              <p className="font-korean text-[#8B1E24] text-sm font-bold mb-1">함께해요</p>
+              <h3 className="font-heading font-bold text-white mb-2" style={{ fontSize: 'clamp(18px, 2.5vw, 24px)' }}>
+                Don't see your name here?
+              </h3>
+              <p className="font-sans text-[#C4A882] text-sm leading-relaxed max-w-md">
+                Join Dibrugarh Korean Club and become part of a growing community of Korean language and culture enthusiasts.
+              </p>
+            </div>
+            <Link
+              href="/join"
+              className="flex-shrink-0 flex items-center gap-2 px-6 py-3 rounded-xl font-sans font-semibold text-sm transition-all hover:opacity-90 active:scale-95 whitespace-nowrap"
+              style={{ background: '#8B1E24', color: '#fff' }}
+            >
+              Join Us Today <ArrowRight size={15} />
+            </Link>
+          </div>
+        </motion.section>
+      )}
 
       <Footer />
     </div>

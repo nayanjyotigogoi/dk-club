@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Calendar, MapPin, Play, Star, BookOpen, X, CheckCircle2 } from 'lucide-react'
 import { API_BASE, type ApiEvent, type ApiMediaPick, type ApiMember } from '@/lib/api'
+import { getDailyItems } from '@/lib/daily'
 
 // ─── Countdown ────────────────────────────────────────────────────────────────
 
@@ -352,7 +353,7 @@ function KoreanMediaPicks() {
   useEffect(() => {
     fetch(`${API_BASE}/media-picks`)
       .then(r => r.json())
-      .then((data: ApiMediaPick[]) => { if (data?.length) setMediaPicks(data) })
+      .then((data: ApiMediaPick[]) => { if (data?.length) setMediaPicks(getDailyItems(data, 3)) })
       .catch(() => {})
   }, [])
 
@@ -374,7 +375,7 @@ function KoreanMediaPicks() {
           Korean Media Picks
         </h3>
         <Link
-          href="/culture"
+          href="/media"
           className="flex items-center gap-1 font-sans text-sm font-medium transition-opacity hover:opacity-70"
           style={{ color: '#8B1E24' }}
         >
@@ -427,7 +428,7 @@ function KoreanMediaPicks() {
       {/* Footer CTA */}
       <div className="px-6 py-5">
         <motion.button
-          onClick={() => router.push('/culture')}
+          onClick={() => router.push('/media')}
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           className="w-full font-sans font-semibold rounded-[22px] py-3 border-2 transition-colors text-center"

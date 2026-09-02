@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { Lightbulb, Sparkles } from 'lucide-react'
 import { API_BASE, type ApiFunFact, type ApiGalleryPhoto } from '@/lib/api'
+import { getDailyItem } from '@/lib/daily'
 
 // ─── Moments Together ─────────────────────────────────────────────────────────
 
@@ -179,7 +180,7 @@ function FunFactCard() {
       .catch(() => {})
   }, [])
 
-  const item = facts[Math.floor(Math.random() * facts.length)] ?? facts[0]
+  const item = getDailyItem(facts) ?? facts[0]
 
   return (
     <motion.div
@@ -256,7 +257,7 @@ function DidYouKnowCard() {
       .catch(() => {})
   }, [])
 
-  const item = items[1] ?? items[0]
+  const item = getDailyItem(items) ?? items[0]
 
   return (
     <motion.div

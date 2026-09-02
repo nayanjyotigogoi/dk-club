@@ -3,20 +3,36 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { motion } from 'framer-motion'
-import { Mail } from 'lucide-react'
+import { Mail, Loader2 } from 'lucide-react'
 import { useState } from 'react'
+import { API_BASE } from '@/lib/api'
 
 export function Footer() {
   const currentYear = new Date().getFullYear()
   const [email, setEmail] = useState('')
-  const [subscribed, setSubscribed] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'duplicate' | 'error'>('idle')
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (email) {
-      setSubscribed(true)
-      setEmail('')
-      setTimeout(() => setSubscribed(false), 3000)
+    if (!email || status === 'loading') return
+    setStatus('loading')
+    try {
+      const res = await fetch(`${API_BASE}/newsletter/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+      const data = await res.json()
+      if (data.message === 'already_subscribed') {
+        setStatus('duplicate')
+      } else {
+        setStatus('success')
+        setEmail('')
+      }
+    } catch {
+      setStatus('error')
+    } finally {
+      setTimeout(() => setStatus('idle'), 4000)
     }
   }
 
@@ -256,23 +272,31 @@ export function Footer() {
                   placeholder="Enter your email"
                   className="w-full px-3 py-2 bg-background border border-border rounded text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
                   required
+                  disabled={status === 'loading'}
                 />
                 <motion.button
                   type="submit"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="w-full px-3 py-2 bg-primary text-primary-foreground rounded font-semibold text-sm hover:bg-primary/90 transition-colors"
+                  disabled={status === 'loading'}
+                  className="w-full px-3 py-2 bg-primary text-primary-foreground rounded font-semibold text-sm hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 disabled:opacity-70"
                 >
-                  Subscribe
+                  {status === 'loading' ? <><Loader2 size={13} className="animate-spin" /> Subscribing…</> : 'Subscribe'}
                 </motion.button>
               </div>
-              {subscribed && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-xs text-primary font-semibold text-center"
-                >
-                  Thank you!
+              {status === 'success' && (
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs text-primary font-semibold text-center">
+                  🎉 You're subscribed! Welcome to DKC.
+                </motion.p>
+              )}
+              {status === 'duplicate' && (
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs font-semibold text-center" style={{ color: '#D97706' }}>
+                  You're already subscribed!
+                </motion.p>
+              )}
+              {status === 'error' && (
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xs font-semibold text-center" style={{ color: '#DC2626' }}>
+                  Something went wrong. Please try again.
                 </motion.p>
               )}
             </form>
