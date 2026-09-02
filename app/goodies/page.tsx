@@ -132,7 +132,7 @@ export default function GoodiesPage() {
                     </span>
                     {/* Tags */}
                     <div className="absolute top-3 left-3 flex flex-col gap-1">
-                      {item.tags.slice(0, 1).map(tag => (
+                      {(item.tags ?? []).slice(0, 1).map(tag => (
                         <span
                           key={tag}
                           className="font-sans text-[10px] font-semibold px-2 py-0.5 rounded-full"

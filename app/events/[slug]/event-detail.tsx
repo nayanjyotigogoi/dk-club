@@ -191,7 +191,7 @@ export function EventDetail({ slug }: { slug: string }) {
               {/* Description */}
               <div className="mb-8">
                 <h2 className="font-heading font-bold text-[#2B2B2B] text-xl mb-4">About This Event</h2>
-                {event.long_description.split('\n').map((para, i) =>
+                {(event.long_description ?? '').split('\n').map((para, i) =>
                   para.trim() ? (
                     <p key={i} className="font-sans text-[#555] text-base leading-relaxed mb-4">{para.trim()}</p>
                   ) : null
