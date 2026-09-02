@@ -221,7 +221,7 @@ function ConversationBlock({ lines, playingText, speak }: {
           const isA = line.speaker === 'A'
           const isPlaying = playingText === audioText
           return (
-            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', flexDirection: isA ? 'row' : 'row-reverse' }}>
+            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', flexDirection: isA ? 'row' : 'row-reverse', minWidth: 0 }}>
               <div style={{
                 width: '32px', height: '32px', borderRadius: '50%', flexShrink: 0,
                 background: isA ? accent : '#2D5F7A',
@@ -235,11 +235,12 @@ function ConversationBlock({ lines, playingText, speak }: {
                 background: isA ? '#FFFFFF' : '#EFF6FB',
                 border: `1px solid ${isA ? border : '#B5D4E8'}`,
                 borderRadius: isA ? '4px 14px 14px 14px' : '14px 4px 14px 14px',
-                padding: '10px 14px', maxWidth: '70%',
+                padding: '10px 14px', maxWidth: 'min(70%, 240px)',
                 fontSize: '14px', lineHeight: '1.65',
                 fontFamily: lang === 'ko' ? 'var(--font-korean, serif)' : "'DM Sans', var(--font-sans, sans-serif)",
                 color: '#1A1008',
                 boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
+                wordBreak: 'break-word', overflowWrap: 'break-word',
               }}>
                 {text}
               </div>
