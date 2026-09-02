@@ -15,9 +15,17 @@ const CHAPTERS = [
 
 export function LearnBannerSection() {
   return (
-    <section className="bg-background" style={{ borderBottom: '1px solid #E8DCCF', padding: '56px 0' }}>
+    <section className="bg-background" style={{ borderBottom: '1px solid #E8DCCF', padding: '48px 0' }}>
+      <style>{`
+        .learn-banner-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+        .learn-chapter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        @media (max-width: 768px) {
+          .learn-banner-grid { grid-template-columns: 1fr; gap: 32px; }
+          .learn-chapter-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+        }
+      `}</style>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '56px', alignItems: 'center' }}>
+        <div className="learn-banner-grid">
 
           {/* Left: text */}
           <motion.div
@@ -51,7 +59,7 @@ export function LearnBannerSection() {
 
             <p className="font-sans" style={{
               fontSize: '14px', color: '#7A6A5A',
-              lineHeight: 1.75, marginBottom: '20px', maxWidth: '420px',
+              lineHeight: 1.75, marginBottom: '20px', maxWidth: '100%',
             }}>
               Six interactive chapters — from the Hangul alphabet to full conversations. Every word has audio, with English and Assamese translations throughout.
             </p>
@@ -85,7 +93,7 @@ export function LearnBannerSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.45, delay: 0.1 }}
-            style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}
+            className="learn-chapter-grid"
           >
             {CHAPTERS.map((ch, i) => (
               <motion.div
