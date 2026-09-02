@@ -7,6 +7,11 @@ const LearnBannerSection = dynamic(
   { ssr: false }
 )
 
+const DailyDiscoverySection = dynamic(
+  () => import('@/components/daily-discovery-section').then(m => ({ default: m.DailyDiscoverySection })),
+  { ssr: false }
+)
+
 const DiscoverSection = dynamic(
   () => import('@/components/discover-section').then(m => ({ default: m.DiscoverSection })),
   { ssr: false }
@@ -21,6 +26,7 @@ export function HomeDynamicSections() {
   return (
     <>
       <LearnBannerSection />
+      <DailyDiscoverySection />
       <DiscoverSection />
       <EventsSection />
     </>
