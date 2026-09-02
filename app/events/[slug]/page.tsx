@@ -2,6 +2,21 @@
 import type { Metadata } from 'next'
 import { EventDetail } from './event-detail'
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api/v1'
+
+export async function generateStaticParams() {
+  try {
+    const res = await fetch(`${API_URL}/events`, { next: { revalidate: 0 } })
+    if (!res.ok) return []
+    const events: { slug: string }[] = await res.json()
+    return events.map(e => ({ slug: e.slug }))
+  } catch {
+    return []
+  }
+}
+
+export const dynamicParams = true
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const title = slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 
+export const dynamic = 'force-static'
+
 export const metadata: Metadata = {
   title: 'Goodies & Merchandise',
   description: 'Get exclusive Dibrugarh Korean Club merchandise — tote bags, stickers, pins and more. Show your Korean pride on campus at Dibrugarh University, Assam.',
