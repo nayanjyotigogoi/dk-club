@@ -564,17 +564,17 @@ function Chapter5({ items, conversations, playingText, speak }: ChProps) {
                 background: isPlaying ? '#fff' : tint,
                 border: `1.5px solid ${isPlaying ? accent : border}`,
                 borderRadius: '12px', padding: '14px 16px',
-                display: 'flex', alignItems: 'center', gap: '12px', transition: 'all 0.2s',
+                display: 'flex', alignItems: 'flex-start', gap: '12px', transition: 'all 0.2s',
                 boxShadow: isPlaying ? `0 4px 16px ${accent}22` : 'none',
               }}>
-                <AudioBtn text={audioText} playing={isPlaying} onSpeak={speak} />
-                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px' }}>
-                  <span style={{ fontFamily: 'var(--font-korean, serif)', fontSize: '17px', color: isPlaying ? accent : '#1A1008', transition: 'color 0.2s' }}>{p.korean}</span>
-                  <span style={{ fontFamily: "'DM Sans', var(--font-sans, sans-serif)", fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic' }}>{p.romanization}</span>
+                <div style={{ flexShrink: 0, paddingTop: '2px' }}>
+                  <AudioBtn text={audioText} playing={isPlaying} onSpeak={speak} />
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', alignItems: 'flex-end', flexShrink: 0 }}>
-                  <span style={{ fontFamily: "'DM Sans', var(--font-sans, sans-serif)", fontSize: '13px', color: '#4B5563', textAlign: 'right' }}>{p.english}</span>
-                  {p.assamese && <span style={{ fontFamily: "'DM Sans', var(--font-sans, sans-serif)", fontSize: '12px', color: '#7A6A5A' }}>{p.assamese}</span>}
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                  <span style={{ fontFamily: 'var(--font-korean, serif)', fontSize: '17px', color: isPlaying ? accent : '#1A1008', transition: 'color 0.2s', wordBreak: 'break-word' }}>{p.korean}</span>
+                  <span style={{ fontFamily: "'DM Sans', var(--font-sans, sans-serif)", fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic', wordBreak: 'break-word' }}>{p.romanization}</span>
+                  <span style={{ fontFamily: "'DM Sans', var(--font-sans, sans-serif)", fontSize: '13px', color: '#4B5563', wordBreak: 'break-word' }}>{p.english}</span>
+                  {p.assamese && <span style={{ fontFamily: "'DM Sans', var(--font-sans, sans-serif)", fontSize: '12px', color: '#7A6A5A', wordBreak: 'break-word' }}>{p.assamese}</span>}
                 </div>
               </div>
             )
