@@ -72,6 +72,7 @@ export interface ApiMagazine {
   page_count: number
   sort_order: number | null
   articles: ApiArticle[]
+  has_pdf?: boolean
 }
 
 export interface ApiGoodie {

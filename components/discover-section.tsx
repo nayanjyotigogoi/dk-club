@@ -90,6 +90,21 @@ function MagazineCard() {
           View Magazine
           <ArrowRight className="w-3.5 h-3.5" />
         </Link>
+
+        {/* Handmade edition CTA */}
+        <Link
+          href="/magazine/in-yeon-vol-1/read"
+          className="flex items-center justify-center gap-2 w-full rounded-full font-sans font-semibold text-xs transition-all hover:opacity-90 active:scale-95 mt-2.5"
+          style={{
+            background: 'rgba(250,243,237,0.12)',
+            color: '#FAF3ED',
+            height: '36px',
+            border: '1px solid rgba(250,243,237,0.25)',
+          }}
+        >
+          <BookOpen className="w-3 h-3" />
+          Read Original Handmade Edition
+        </Link>
       </div>
     </div>
   )

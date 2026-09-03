@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { ArrowLeft, BookOpen, ChevronRight } from 'lucide-react'
+import { ArrowLeft, BookOpen, ChevronRight, BookMarked } from 'lucide-react'
 import { Navbar } from '@/components/navbar'
 import { Footer } from '@/components/footer'
 import { type ApiMagazine, type ApiArticle, API_BASE } from '@/lib/api'
@@ -459,6 +459,16 @@ export function MagazineIssue({ slug }: { slug: string }) {
             <p className="font-sans text-sm" style={{ color: `${issue.cover_accent}70` }}>
               {issue.month} {issue.year} &middot; {issue.page_count} pages &middot; {issue.articles.length} articles
             </p>
+            {issue.has_pdf && (
+              <Link
+                href={`/magazine/${slug}/read`}
+                className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 rounded-xl font-sans text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
+                style={{ background: `${issue.cover_accent}18`, color: issue.cover_accent, border: `1.5px solid ${issue.cover_accent}35` }}
+              >
+                <BookMarked className="w-4 h-4" />
+                View Original Handmade Edition
+              </Link>
+            )}
           </div>
         </div>
 
