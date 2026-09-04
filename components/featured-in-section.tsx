@@ -6,7 +6,7 @@ import { ExternalLink, ArrowRight, X, ZoomIn } from 'lucide-react'
 import { API_BASE, type ApiPressMention } from '@/lib/api'
 
 const BACKEND_URL = (process.env.NEXT_PUBLIC_BACKEND_URL ?? 'https://dibrugarhkoreanclub.shop')
-const pressImageUrl = (path: string | null) => path ? `${BACKEND_URL}/press/images/${path}` : null
+const pressImageUrl = (path: string | null) => path ? `${BACKEND_URL}/press/images/${path}` : undefined
 
 function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
   useEffect(() => {
