@@ -80,7 +80,7 @@ export interface ApiPressMention {
   title: string
   source_name: string
   source_url: string | null
-  image_url: string | null
+  image_path: string | null
   language: 'Korean' | 'Assamese' | 'English' | 'Hindi'
   published_date: string | null
   is_featured: boolean

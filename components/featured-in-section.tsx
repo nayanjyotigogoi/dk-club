@@ -5,6 +5,9 @@ import Link from 'next/link'
 import { ExternalLink, ArrowRight, X, ZoomIn } from 'lucide-react'
 import { API_BASE, type ApiPressMention } from '@/lib/api'
 
+const BACKEND_URL = (process.env.NEXT_PUBLIC_BACKEND_URL ?? 'https://dibrugarhkoreanclub.shop')
+const pressImageUrl = (path: string | null) => path ? `${BACKEND_URL}/press/images/${path}` : null
+
 function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
   useEffect(() => {
     const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -72,10 +75,10 @@ function PressMentionCard({ item, onImageClick }: { item: ApiPressMention; onIma
       }}
     >
       {/* Article image */}
-      {item.image_url ? (
+      {pressImageUrl(item.image_path) ? (
         <div className="w-full overflow-hidden relative" style={{ height: '180px' }}>
           <img
-            src={item.image_url}
+            src={pressImageUrl(item.image_path)}
             alt={item.title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             draggable={false}
@@ -88,7 +91,7 @@ function PressMentionCard({ item, onImageClick }: { item: ApiPressMention; onIma
           {/* View image button — only when no URL */}
           {!item.source_url && (
             <button
-              onClick={e => { e.preventDefault(); e.stopPropagation(); onImageClick(item.image_url!, item.title) }}
+              onClick={e => { e.preventDefault(); e.stopPropagation(); onImageClick(pressImageUrl(item.image_path)!, item.title) }}
               className="absolute top-2 right-2 p-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
               style={{ background: 'rgba(255,255,255,0.2)', color: '#fff' }}
             >
@@ -104,7 +107,7 @@ function PressMentionCard({ item, onImageClick }: { item: ApiPressMention; onIma
               ? <span className="flex items-center gap-1 font-sans text-[10px] text-white/70"><ExternalLink size={9} /> Read</span>
               : <span
                   className="flex items-center gap-1 font-sans text-[10px] text-white/70 cursor-pointer"
-                  onClick={e => { e.preventDefault(); e.stopPropagation(); onImageClick(item.image_url!, item.title) }}
+                  onClick={e => { e.preventDefault(); e.stopPropagation(); onImageClick(pressImageUrl(item.image_path)!, item.title) }}
                 ><ZoomIn size={9} /> View</span>
             }
           </div>

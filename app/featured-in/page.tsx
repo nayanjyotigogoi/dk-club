@@ -8,6 +8,9 @@ import { Footer } from '@/components/footer'
 import { PageHero } from '@/components/page-hero'
 import { API_BASE, type ApiPressMention } from '@/lib/api'
 
+const BACKEND_URL = (process.env.NEXT_PUBLIC_BACKEND_URL ?? 'https://dibrugarhkoreanclub.shop')
+const pressImageUrl = (path: string | null) => path ? `${BACKEND_URL}/press/images/${path}` : null
+
 function Lightbox({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
   useEffect(() => {
     const esc = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
@@ -76,17 +79,17 @@ function PressCard({ item, index, onImageClick }: { item: ApiPressMention; index
       <div className="h-1" style={{ background: lang.color }} />
 
       {/* Image */}
-      {item.image_url ? (
+      {pressImageUrl(item.image_path) ? (
         <div className="w-full overflow-hidden relative" style={{ height: '200px' }}>
           <img
-            src={item.image_url}
+            src={pressImageUrl(item.image_path)}
             alt={item.title}
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
             draggable={false}
           />
           {!item.source_url && (
             <button
-              onClick={() => onImageClick(item.image_url!, item.title)}
+              onClick={() => onImageClick(pressImageUrl(item.image_path)!, item.title)}
               className="absolute inset-0 w-full h-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
               style={{ background: 'rgba(0,0,0,0.35)' }}
             >
@@ -142,9 +145,9 @@ function PressCard({ item, index, onImageClick }: { item: ApiPressMention; index
         >
           <ExternalLink size={13} /> Read Article
         </a>
-      ) : item.image_url ? (
+      ) : pressImageUrl(item.image_path) ? (
         <button
-          onClick={() => onImageClick(item.image_url!, item.title)}
+          onClick={() => onImageClick(pressImageUrl(item.image_path)!, item.title)}
           className="flex items-center justify-center gap-2 py-3 font-sans text-sm font-semibold transition-all hover:opacity-80"
           style={{ borderTop: `1px solid ${lang.border}`, background: lang.bg, color: lang.color }}
         >
