@@ -94,11 +94,12 @@ export interface ApiGoodie {
   price: string
   description: string
   availability: 'available' | 'limited' | 'sold-out'
-  image_path: string
+  image_path?: string
   color: string
   icon: string
-  tags: string[]
-  sort_order: number
+  tags?: string[]
+  sort_order?: number
+  is_visible?: boolean
 }
 
 export interface ApiMember {
