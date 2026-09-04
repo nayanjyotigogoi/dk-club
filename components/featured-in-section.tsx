@@ -153,7 +153,7 @@ export function FeaturedInSection() {
   const [items, setItems] = useState<ApiPressMention[]>([])
   const [lightbox, setLightbox] = useState<{ src: string; alt: string } | null>(null)
   const trackRef = useRef<HTMLDivElement>(null)
-  const animRef = useRef<number>()
+  const animRef = useRef<number | undefined>(undefined)
   const posRef  = useRef(0)
 
   useEffect(() => {
