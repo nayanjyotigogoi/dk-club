@@ -245,7 +245,24 @@
       "Bash(mkdir -p \"E:/Demo/dibrugarh-korean-club-website/app/learn/chapters\" *)",
       "Bash(php -r 'require '\\\\''E:/Demo/dibrugarh-korean-club-api/vendor/autoload.php'\\\\''; $app = require '\\\\''E:/Demo/dibrugarh-korean-club-api/bootstrap/app.php'\\\\''; $app->make\\('\\\\''Illuminate\\\\Contracts\\\\Console\\\\Kernel'\\\\''\\)->bootstrap\\(\\); echo \\\\App\\\\Models\\\\User::count\\(\\).'\\\\'' users in DB'\\\\'';')",
       "Bash(php -r ' *)",
-      "Bash(php -r \"require 'vendor/autoload.php'; new App\\\\Filament\\\\Resources\\\\Learning\\\\LearningChapterResource\\(\\);\")"
+      "Bash(php -r \"require 'vendor/autoload.php'; new App\\\\Filament\\\\Resources\\\\Learning\\\\LearningChapterResource\\(\\);\")",
+      "Bash(xargs grep -l \"phrase\\\\|fun_fact\\\\|media_pick\")",
+      "Bash(xargs grep -l \"phrase\\\\|fun.fact\\\\|media.pick\\\\|funFact\\\\|mediaPick\")",
+      "Bash(git commit *)",
+      "Bash(git -C /e/Demo/dibrugarh-korean-club-api status)",
+      "Bash(git -C /e/Demo/dibrugarh-korean-club-website add \"app/learn/chapters/[slug]/chapter-view.tsx\")",
+      "Bash(git -C /e/Demo/dibrugarh-korean-club-website commit -m \"Fix intro phrases layout on mobile — stack Korean, romanization, English, Assamese vertically\")",
+      "Bash(git -C /e/Demo/dibrugarh-korean-club-website push origin main)",
+      "Bash(git -C /e/Demo/dibrugarh-korean-club-website status)",
+      "Bash(git -C /e/Demo/dibrugarh-korean-club-website diff --name-only)",
+      "Bash(git -C /e/Demo/dibrugarh-korean-club-website show --stat HEAD)",
+      "Bash(copy \"E:\\\\Demo\\\\dibrugarh-korean-club-website\\\\node_modules\\\\pdfjs-dist\\\\build\\\\pdf.worker.min.mjs\" \"E:\\\\Demo\\\\dibrugarh-korean-club-website\\\\public\\\\pdf.worker.min.mjs\")",
+      "PowerShell(Copy-Item \"E:\\\\Demo\\\\dibrugarh-korean-club-website\\\\node_modules\\\\pdfjs-dist\\\\build\\\\pdf.worker.min.mjs\" \"E:\\\\Demo\\\\dibrugarh-korean-club-website\\\\public\\\\pdf.worker.min.mjs\")",
+      "Bash(find \"C:/Users/User/AppData/Local/Temp/claude\" -name \"*.jpg\" -o -name \"*.png\" 2>/dev/null | head -20)",
+      "Bash(find \"C:/Users/User/AppData/Local/Temp\" -name \"*.jpg\" 2>/dev/null | head -20)",
+      "Bash(find \"C:/Users/User/AppData\" -name \"*.jpg\" -newer \"C:/Users/User/AppData/Local/Temp/claude\" 2>/dev/null | head -20 *)",
+      "PowerShell(Copy-Item \"E:\\\\Demo\\\\dibrugarh-korean-club-website\\\\public\\\\images\\\\book-img-14.jpg\" \"E:\\\\Demo\\\\dibrugarh-korean-club-website\\\\public\\\\images\\\\book-cover-front.jpg\" -Force)",
+      "PowerShell(Copy-Item \"E:\\\\Demo\\\\dibrugarh-korean-club-website\\\\public\\\\images\\\\book-img-15.jpg\" \"E:\\\\Demo\\\\dibrugarh-korean-club-website\\\\public\\\\images\\\\book-cover-back.jpg\" -Force)"
     ]
   }
 }

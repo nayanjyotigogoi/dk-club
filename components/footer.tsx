@@ -44,6 +44,7 @@ export function Footer() {
     { id: 'quick-gallery',   label: 'Gallery',      href: '/gallery' },
     { id: 'quick-members',   label: 'Members',      href: '/members' },
     { id: 'quick-contact',   label: 'Contact Us',   href: '/contact' },
+    { id: 'quick-press',     label: 'Featured In',  href: '/featured-in' },
   ]
 
   const memberArea = [

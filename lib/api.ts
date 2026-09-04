@@ -75,8 +75,19 @@ export interface ApiMagazine {
   has_pdf?: boolean
 }
 
-export interface ApiGoodie {
+export interface ApiPressMention {
   id: number
+  title: string
+  source_name: string
+  source_url: string | null
+  image_url: string | null
+  language: 'Korean' | 'Assamese' | 'English' | 'Hindi'
+  published_date: string | null
+  is_featured: boolean
+}
+
+export interface ApiGoodie {
+  id: number | string
   name: string
   korean_name: string
   category: string

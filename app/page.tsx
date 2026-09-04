@@ -24,6 +24,8 @@ import { KoreanPhraseWall } from '@/components/korean-phrase-wall'
 import { HomeDynamicSections } from '@/components/home-dynamic-sections'
 import { LearnPromoSection } from '@/components/learn-promo-section'
 import { CommunitySection } from '@/components/community-section'
+import { FeaturedInSection } from '@/components/featured-in-section'
+import { BookSpotlightSection } from '@/components/book-spotlight-section'
 import { Footer } from '@/components/footer'
 
 export default function Home() {
@@ -33,9 +35,11 @@ export default function Home() {
       <HeroSection />
       <StatsBar />
       <KoreanPhraseWall />
+      <BookSpotlightSection />
       <HomeDynamicSections />
       {/* <LearnPromoSection /> */}{/* hidden — not ready for users */}
       <CommunitySection />
+      <FeaturedInSection />
       <Footer />
     </>
   )
